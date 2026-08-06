@@ -1,0 +1,443 @@
+/* ==========================================
+   RESET
+========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+
+    --success: #16a34a;
+
+    --background: #f5f7fb;
+
+    --card: #ffffff;
+
+    --text: #111827;
+    --muted: #6b7280;
+
+    --border: #dbe3ec;
+
+    --shadow:
+            0 10px 35px rgba(15,23,42,.08);
+
+    --radius: 18px;
+}
+
+body {
+
+    font-family: "Inter", sans-serif;
+
+    background: var(--background);
+
+    color: var(--text);
+
+    line-height: 1.6;
+
+}
+
+
+/* ==========================================
+   PAGE
+========================================== */
+
+.page {
+
+    max-width: 760px;
+
+    margin: 0 auto;
+
+    padding: 40px 20px 80px;
+
+}
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.site-header {
+
+    text-align: center;
+
+    margin-bottom: 40px;
+
+}
+
+.logo {
+
+    font-size: 32px;
+
+    font-weight: 700;
+
+    color: var(--primary);
+
+}
+
+.tagline {
+
+    margin-top: 10px;
+
+    color: var(--muted);
+
+    font-size: 16px;
+
+}
+
+
+/* ==========================================
+   CARD
+========================================== */
+
+.landing,
+.question,
+.result {
+
+    background: var(--card);
+
+    border-radius: var(--radius);
+
+    padding: 42px;
+
+    box-shadow: var(--shadow);
+
+}
+
+
+/* ==========================================
+   TYPOGRAPHY
+========================================== */
+
+h1 {
+
+    font-size: 34px;
+
+    line-height: 1.2;
+
+    margin-bottom: 18px;
+
+}
+
+h2 {
+
+    font-size: 28px;
+
+    margin-bottom: 24px;
+
+}
+
+h3 {
+
+    margin-top: 30px;
+
+    margin-bottom: 10px;
+
+    font-size: 18px;
+
+}
+
+.subtitle {
+
+    color: var(--muted);
+
+    font-size: 18px;
+
+    margin-bottom: 35px;
+
+}
+
+p {
+
+    color: var(--muted);
+
+}
+
+.trust {
+
+    margin-top: 28px;
+
+    font-size: 14px;
+
+    color: var(--muted);
+
+    line-height: 1.8;
+
+}
+
+
+/* ==========================================
+   PROGRESS
+========================================== */
+
+.progress {
+
+    margin-bottom: 30px;
+
+}
+
+.progress-text {
+
+    font-size: 14px;
+
+    color: var(--muted);
+
+    margin-bottom: 8px;
+
+}
+
+.progress-bar {
+
+    height: 10px;
+
+    background: #e5e7eb;
+
+    border-radius: 999px;
+
+    overflow: hidden;
+
+}
+
+.progress-fill {
+
+    height: 100%;
+
+    background: linear-gradient(
+            90deg,
+            var(--primary),
+            #60a5fa
+    );
+
+    transition: width .35s ease;
+
+}
+
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+button {
+
+    width: 100%;
+
+    border: 1px solid var(--border);
+
+    background: white;
+
+    padding: 16px 18px;
+
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition: .2s;
+
+}
+
+button:hover {
+
+    border-color: var(--primary);
+
+    background: #eff6ff;
+
+    transform: translateY(-1px);
+
+}
+
+button:active {
+
+    transform: translateY(0);
+
+}
+
+#startBtn,
+#nextBtn,
+#restartBtn {
+
+    background: var(--primary);
+
+    color: white;
+
+    border: none;
+
+    text-align: center;
+
+    font-weight: 600;
+
+}
+
+#startBtn:hover,
+#nextBtn:hover,
+#restartBtn:hover {
+
+    background: var(--primary-dark);
+
+}
+
+
+/* ==========================================
+   INPUT
+========================================== */
+
+input {
+
+    width: 100%;
+
+    padding: 16px;
+
+    font-size: 16px;
+
+    border-radius: 12px;
+
+    border: 1px solid var(--border);
+
+    outline: none;
+
+    transition: .2s;
+
+}
+
+input:focus {
+
+    border-color: var(--primary);
+
+    box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+
+}
+
+
+/* ==========================================
+   LISTS
+========================================== */
+
+ul {
+
+    margin-left: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+li {
+
+    margin-bottom: 10px;
+
+}
+
+
+/* ==========================================
+   CODE BLOCK
+========================================== */
+
+pre {
+
+    margin-top: 15px;
+
+    padding: 18px;
+
+    background: #f3f4f6;
+
+    border-radius: 12px;
+
+    overflow-x: auto;
+
+    font-size: 13px;
+
+}
+
+
+/* ==========================================
+   DIVIDER
+========================================== */
+
+hr {
+
+    margin: 35px 0;
+
+    border: none;
+
+    border-top: 1px solid #e5e7eb;
+
+}
+
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.site-footer {
+
+    margin-top: 40px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+    color: var(--muted);
+
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width:640px) {
+
+    .page {
+
+        padding: 20px 16px 50px;
+
+    }
+
+    .landing,
+    .question,
+    .result {
+
+        padding: 26px;
+
+    }
+
+    .logo {
+
+        font-size: 26px;
+
+    }
+
+    h1 {
+
+        font-size: 28px;
+
+    }
+
+    h2 {
+
+        font-size: 22px;
+
+    }
+
+    .subtitle {
+
+        font-size: 16px;
+
+    }
+
+}
+
+.option.selected{
+
+    background:#dbeafe;
+
+    border-color:#2563eb;
+
+}
