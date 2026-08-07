@@ -441,3 +441,14 @@ hr {
     border-color:#2563eb;
 
 }
+
+.disclaimer {
+    margin-top: 24px;
+    padding: 14px 16px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #4b5563;
+    line-height: 1.5;
+}

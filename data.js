@@ -36,7 +36,16 @@ const questions = [
     {
         id: "currentLender",
         title: "Who is your current lender?",
-        type: "text",
+        options: [
+            "Muthoot Finance",
+            "Manappuram Finance",
+            "Canara Bank",
+            "State Bank of India",
+            "Bank of Baroda",
+            "Indian Bank",
+            "IIFL Finance",
+            "Other"
+        ],
         showIf: (answers) =>
             answers.purpose === "Switch an existing gold loan"
     }

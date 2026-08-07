@@ -1,16 +1,31 @@
 const lenders = [
+
     {
         id: "canara",
         name: "Canara Bank",
         type: "Bank",
-        logo: "🏦",
-        strengths: [
-            "Low interest rates",
-            "Good for new loans",
-            "Trusted public sector bank"
+
+        summary:
+            "Excellent choice if your priority is the lowest possible interest and you don't mind visiting a branch.",
+
+        recommendedWhen: {
+            lowestInterest: true,
+            fastest: false,
+            trusted: true,
+            emergency: false,
+            highLtv: false,
+            transfer: false
+        },
+
+        reasons: [
+            "One of the lowest interest rates",
+            "Trusted public sector bank",
+            "Good for planned borrowing"
         ],
+
         tradeoffs: [
-            "Processing may take longer than NBFCs"
+            "Physical gold must be brought to the branch",
+            "Processing is slower than NBFCs"
         ]
     },
 
@@ -18,43 +33,28 @@ const lenders = [
         id: "bob",
         name: "Bank of Baroda",
         type: "Bank",
-        logo: "🏦",
-        strengths: [
+
+        summary:
+            "Great balance between low interest and higher loan eligibility.",
+
+        recommendedWhen: {
+            lowestInterest: true,
+            fastest: false,
+            trusted: true,
+            emergency: false,
+            highLtv: true,
+            transfer: false
+        },
+
+        reasons: [
             "Competitive interest rates",
-            "Good branch network",
-            "Suitable for medium to large loans"
+            "Higher loan-to-value eligibility",
+            "Fast account opening"
         ],
-        tradeoffs: [
-            "Documentation may be stricter"
-        ]
-    },
 
-    {
-        id: "sbi",
-        name: "State Bank of India",
-        type: "Bank",
-        logo: "🏦",
-        strengths: [
-            "Strong brand trust",
-            "Competitive pricing",
-            "Large branch network"
-        ],
         tradeoffs: [
-            "Approval process can take longer"
-        ]
-    },
-
-    {
-        id: "union",
-        name: "Union Bank of India",
-        type: "Bank",
-        logo: "🏦",
-        strengths: [
-            "Good interest rates",
-            "Suitable for existing bank customers"
-        ],
-        tradeoffs: [
-            "Limited availability in some locations"
+            "Still slower than NBFCs",
+            "Physical branch visit required"
         ]
     },
 
@@ -62,13 +62,57 @@ const lenders = [
         id: "indian",
         name: "Indian Bank",
         type: "Bank",
-        logo: "🏦",
-        strengths: [
-            "Competitive pricing",
-            "Good for larger loans"
+
+        summary:
+            "Good option for customers looking for competitive rates with relatively quick branch processing.",
+
+        recommendedWhen: {
+            lowestInterest: true,
+            fastest: false,
+            trusted: true,
+            emergency: false,
+            highLtv: false,
+            transfer: false
+        },
+
+        reasons: [
+            "Competitive interest",
+            "Quick branch processing",
+            "Public sector bank"
         ],
+
         tradeoffs: [
-            "Additional documents may be required"
+            "ITR may be required for larger loans",
+            "New account opening may take time"
+        ]
+    },
+
+    {
+        id: "sbi",
+        name: "State Bank of India",
+        type: "Bank",
+
+        summary:
+            "Best suited for borrowers who value trust, reputation and nationwide branch coverage.",
+
+        recommendedWhen: {
+            lowestInterest: true,
+            fastest: false,
+            trusted: true,
+            emergency: false,
+            highLtv: false,
+            transfer: false
+        },
+
+        reasons: [
+            "Highly trusted bank",
+            "Competitive interest rates",
+            "Excellent branch network"
+        ],
+
+        tradeoffs: [
+            "Can take longer than NBFCs",
+            "Branch queues can be longer"
         ]
     },
 
@@ -76,14 +120,27 @@ const lenders = [
         id: "muthoot",
         name: "Muthoot Finance",
         type: "NBFC",
-        logo: "🟡",
-        strengths: [
-            "Very fast processing",
-            "Large branch network",
-            "Easy documentation"
+
+        summary:
+            "Best choice when speed matters and you need money the same day.",
+
+        recommendedWhen: {
+            lowestInterest: false,
+            fastest: true,
+            trusted: true,
+            emergency: true,
+            highLtv: false,
+            transfer: true
+        },
+
+        reasons: [
+            "Very fast approval",
+            "Excellent for emergency loans",
+            "Supports balance transfer"
         ],
+
         tradeoffs: [
-            "Interest may be higher than banks"
+            "Interest rates are usually higher than banks"
         ]
     },
 
@@ -91,14 +148,56 @@ const lenders = [
         id: "manappuram",
         name: "Manappuram Finance",
         type: "NBFC",
-        logo: "🟠",
-        strengths: [
-            "Fast approval",
-            "Good customer service",
-            "Quick disbursement"
+
+        summary:
+            "Strong option for borrowers looking for quick processing and flexible service.",
+
+        recommendedWhen: {
+            lowestInterest: false,
+            fastest: true,
+            trusted: true,
+            emergency: true,
+            highLtv: false,
+            transfer: true
+        },
+
+        reasons: [
+            "Very fast processing",
+            "Supports balance transfer",
+            "Good for urgent requirements"
         ],
+
         tradeoffs: [
-            "Interest may be higher than banks"
+            "Higher interest than most banks"
+        ]
+    },
+
+    {
+        id: "iifl",
+        name: "IIFL Finance",
+        type: "NBFC",
+
+        summary:
+            "Good digital-first option with quick processing and convenient customer experience.",
+
+        recommendedWhen: {
+            lowestInterest: false,
+            fastest: true,
+            trusted: true,
+            emergency: true,
+            highLtv: false,
+            transfer: true
+        },
+
+        reasons: [
+            "Quick approval",
+            "Good digital experience",
+            "Convenient application process"
+        ],
+
+        tradeoffs: [
+            "Interest is generally higher than public sector banks"
         ]
     }
+
 ];

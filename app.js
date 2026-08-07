@@ -405,16 +405,23 @@ function showRecommendation() {
 
         <div class="result">
 
-            <h1>Your Best Match</h1>
+            <h1>Your Recommended Lenders</h1>
 
             <p class="subtitle">
-                Based on your answers, these lenders appear
-                to be the best fit.
+                Based on what matters most to you, these are our recommended options.
             </p>
 
             ${recommendations
         .map(renderRecommendationCard)
         .join("<hr>")}
+
+            <div class="disclaimer">
+
+                Recommendations are based on publicly available lender information
+                and our independent research. Final interest rates, eligibility,
+                and approval depend on the lender's assessment of your gold and application.
+
+            </div>
 
             <br>
 
@@ -438,12 +445,10 @@ function showRecommendation() {
 
 function renderRecommendationCard(lender, index) {
 
-    const medal = [
-
+    const medals = [
         "🥇",
         "🥈",
         "🥉"
-
     ];
 
     return `
@@ -452,22 +457,16 @@ function renderRecommendationCard(lender, index) {
 
             <h2>
 
-                ${medal[index]}
-                ${lender.logo}
+                ${medals[index]}
                 ${lender.name}
 
             </h2>
 
-            <div
-                style="
-                    color:#2563eb;
-                    font-weight:600;
-                    margin-bottom:18px;
-                ">
+            <p style="color:#2563eb;font-weight:600;">
 
-                ${lender.match}
+                ${lender.summary}
 
-            </div>
+            </p>
 
             <h3>
                 Why we recommend it
@@ -476,7 +475,7 @@ function renderRecommendationCard(lender, index) {
             <ul>
 
                 ${lender.reasons
-        .map(reason => `<li>${reason}</li>`)
+        .map(r => `<li>${r}</li>`)
         .join("")}
 
             </ul>
@@ -488,7 +487,7 @@ function renderRecommendationCard(lender, index) {
             <ul>
 
                 ${lender.tradeoffs
-        .map(item => `<li>${item}</li>`)
+        .map(t => `<li>${t}</li>`)
         .join("")}
 
             </ul>
