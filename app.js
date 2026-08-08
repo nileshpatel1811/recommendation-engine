@@ -5,6 +5,16 @@ const state = {
     answers: {}
 };
 
+function trackEvent(eventName, parameters = {}) {
+
+    if (typeof gtag === "function") {
+
+        gtag("event", eventName, parameters);
+
+    }
+
+}
+
 renderLanding();
 
 /* ======================================================
@@ -42,6 +52,8 @@ function renderLanding() {
 
             state.currentQuestion = 0;
             state.answers = {};
+
+            trackEvent("questionnaire_started");
 
             showQuestion(0);
 
@@ -239,6 +251,11 @@ function bindQuestion(question) {
                 state.answers[question.id] =
                     button.dataset.value;
 
+                trackEvent("question_answered", {
+                    question_id: question.id,
+                    answer: button.dataset.value
+                });
+
                 setTimeout(nextQuestion, 180);
 
             });
@@ -291,6 +308,11 @@ function bindCityAutocomplete() {
             div.onclick = () => {
 
                 state.answers.city = city;
+
+                trackEvent("question_answered", {
+                    question_id: "city",
+                    answer: city
+                });
 
                 suggestions.innerHTML="";
 
@@ -398,6 +420,12 @@ function nextQuestion() {
 
 function showRecommendation() {
 
+    trackEvent("questionnaire_completed", {
+        purpose: state.answers.purpose,
+        priority: state.answers.priority,
+        amount: state.answers.amount
+    });
+
     const recommendations =
         getRecommendations(state.answers);
 
@@ -432,6 +460,13 @@ function showRecommendation() {
         </div>
 
     `;
+
+    trackEvent("recommendations_viewed", {
+        priority: state.answers.priority,
+        recommendation_1: recommendations[0]?.id || "",
+        recommendation_2: recommendations[1]?.id || "",
+        recommendation_3: recommendations[2]?.id || ""
+    });
 
     document
         .getElementById("restartBtn")
