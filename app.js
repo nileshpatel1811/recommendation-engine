@@ -431,33 +431,124 @@ function showRecommendation() {
 
     app.innerHTML = `
 
-        <div class="result">
+<div class="result">
 
-            <h1>Your Recommended Lenders</h1>
+    <h1>Your Recommended Lenders</h1>
 
-            <p class="subtitle">
-                Based on what matters most to you, these are our recommended options.
-            </p>
+<p class="subtitle">
+    Based on what matters most to you, these are our recommended options.
+</p>
 
-            ${recommendations
-        .map(renderRecommendationCard)
-        .join("<hr>")}
+${recommendations
+    .map(renderRecommendationCard)
+    .join("<hr>")}
 
-            <div class="disclaimer">
+<div class="disclaimer">
 
-                Recommendations are based on publicly available lender information
-                and our independent research. Final interest rates, eligibility,
-                and approval depend on the lender's assessment of your gold and application.
+    Recommendations are based on publicly available lender information
+    and our independent research. Final interest rates, eligibility,
+    and approval depend on the lender's assessment of your gold and application.
 
-            </div>
+</div>
 
-            <br>
+<div
+    class="feedback-box"
+    style="
+                    margin-top:30px;
+                    padding:20px;
+                    border:1px solid #e5e7eb;
+                    border-radius:12px;
+                    background:#f9fafb;
+                "
+>
 
-            <button id="restartBtn">
-                Start Again
-            </button>
+    <h3 style="margin-top:0;">
+        Was this recommendation useful?
+    </h3>
 
-        </div>
+    <div
+        id="feedbackOptions"
+        style="
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:10px;
+                        margin-top:15px;
+                    "
+    >
+
+        <button
+            class="feedback-btn"
+            data-feedback="yes"
+        >
+            👍 Yes, this helps
+        </button>
+
+        <button
+            class="feedback-btn"
+            data-feedback="somewhat"
+        >
+            🤔 Somewhat
+        </button>
+
+        <button
+            class="feedback-btn"
+            data-feedback="no"
+        >
+            👎 Not useful
+        </button>
+
+    </div>
+
+    <div
+        id="feedbackDetails"
+        style="display:none;margin-top:18px;"
+    >
+
+                    <textarea
+                        id="feedbackText"
+                        rows="3"
+                        placeholder="What was missing or confusing? (optional)"
+                        style="
+                            width:100%;
+                            box-sizing:border-box;
+                            padding:10px;
+                            border:1px solid #d1d5db;
+                            border-radius:8px;
+                            resize:vertical;
+                            font-family:inherit;
+                        "
+                    ></textarea>
+
+        <button
+            id="feedbackSubmitBtn"
+            style="margin-top:10px;"
+        >
+            Send Feedback
+        </button>
+
+    </div>
+
+    <div
+        id="feedbackThanks"
+        style="
+                        display:none;
+                        margin-top:15px;
+                        color:#166534;
+                        font-weight:600;
+                    "
+    >
+        Thanks — your feedback helps us improve.
+    </div>
+
+</div>
+
+<br>
+
+    <button id="restartBtn">
+        Start Again
+    </button>
+
+</div>
 
     `;
 
@@ -467,6 +558,71 @@ function showRecommendation() {
         recommendation_2: recommendations[1]?.id || "",
         recommendation_3: recommendations[2]?.id || ""
     });
+
+    let selectedFeedback = null;
+
+    document
+        .querySelectorAll(".feedback-btn")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                selectedFeedback =
+                    button.dataset.feedback;
+
+                document
+                    .querySelectorAll(".feedback-btn")
+                    .forEach(btn => {
+                        btn.style.background = "";
+                        btn.style.borderColor = "";
+                    });
+
+                button.style.background = "#dbeafe";
+                button.style.borderColor = "#2563eb";
+
+                trackEvent("recommendation_feedback", {
+
+                    feedback: selectedFeedback,
+
+                    priority: state.answers.priority
+
+                });
+
+                document
+                    .getElementById("feedbackDetails")
+                    .style.display = "block";
+
+            });
+
+        });
+
+    document
+        .getElementById("feedbackSubmitBtn")
+        .addEventListener("click", () => {
+
+            const feedbackText =
+                document
+                    .getElementById("feedbackText")
+                    .value
+                    .trim();
+
+            /*
+             * Important:
+             * Do NOT send free-text feedback to GA4.
+             * It could contain personal information.
+             *
+             * For now we only acknowledge the feedback locally.
+             */
+
+            document
+                .getElementById("feedbackDetails")
+                .style.display = "none";
+
+            document
+                .getElementById("feedbackThanks")
+                .style.display = "block";
+
+        });
 
     document
         .getElementById("restartBtn")
