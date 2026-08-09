@@ -421,9 +421,11 @@ function nextQuestion() {
 function showRecommendation() {
 
     trackEvent("questionnaire_completed", {
-        purpose: state.answers.purpose,
-        priority: state.answers.priority,
-        amount: state.answers.amount
+        purpose: state.answers.purpose || "",
+        priority: state.answers.priority || "",
+        amount: state.answers.amount || "",
+        city: state.answers.city || "",
+        current_lender: state.answers.currentLender || ""
     });
 
     const recommendations =
@@ -467,78 +469,50 @@ ${recommendations
     </h3>
 
     <div
-        id="feedbackOptions"
-        style="
-                        display:flex;
-                        flex-wrap:wrap;
-                        gap:10px;
-                        margin-top:15px;
-                    "
+    id="feedbackOptions"
+    style="
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        margin-top:15px;
+    "
+>
+
+    <button
+        class="feedback-btn"
+        data-feedback="yes"
     >
+        👍 Yes, this helps
+    </button>
 
-        <button
-            class="feedback-btn"
-            data-feedback="yes"
-        >
-            👍 Yes, this helps
-        </button>
+    <button
+        class="feedback-btn"
+        data-feedback="somewhat"
+    >
+        🤔 Somewhat
+    </button>
 
-        <button
-            class="feedback-btn"
-            data-feedback="somewhat"
-        >
-            🤔 Somewhat
-        </button>
+    <button
+        class="feedback-btn"
+        data-feedback="no"
+    >
+        👎 Not useful
+    </button>
 
-        <button
-            class="feedback-btn"
-            data-feedback="no"
-        >
-            👎 Not useful
-        </button>
-
-    </div>
+</div>
 
     <div
-        id="feedbackDetails"
-        style="display:none;margin-top:18px;"
-    >
-
-                    <textarea
-                        id="feedbackText"
-                        rows="3"
-                        placeholder="What was missing or confusing? (optional)"
-                        style="
-                            width:100%;
-                            box-sizing:border-box;
-                            padding:10px;
-                            border:1px solid #d1d5db;
-                            border-radius:8px;
-                            resize:vertical;
-                            font-family:inherit;
-                        "
-                    ></textarea>
-
-        <button
-            id="feedbackSubmitBtn"
-            style="margin-top:10px;"
-        >
-            Send Feedback
-        </button>
-
-    </div>
-
-    <div
-        id="feedbackThanks"
-        style="
-                        display:none;
-                        margin-top:15px;
-                        color:#166534;
-                        font-weight:600;
-                    "
+    id="feedbackThanks"
+    style="
+        display:none;
+        margin-top:15px;
+        color:#166534;
+        font-weight:600;
+    "
     >
         Thanks — your feedback helps us improve.
     </div>
+
 
 </div>
 
@@ -573,8 +547,10 @@ ${recommendations
                 document
                     .querySelectorAll(".feedback-btn")
                     .forEach(btn => {
+
                         btn.style.background = "";
                         btn.style.borderColor = "";
+
                     });
 
                 button.style.background = "#dbeafe";
@@ -584,45 +560,22 @@ ${recommendations
 
                     feedback: selectedFeedback,
 
-                    priority: state.answers.priority
+                    priority: state.answers.priority || "",
+
+                    city: state.answers.city || "",
+
+                    purpose: state.answers.purpose || ""
 
                 });
 
                 document
-                    .getElementById("feedbackDetails")
+                    .getElementById("feedbackThanks")
                     .style.display = "block";
 
             });
 
         });
 
-    document
-        .getElementById("feedbackSubmitBtn")
-        .addEventListener("click", () => {
-
-            const feedbackText =
-                document
-                    .getElementById("feedbackText")
-                    .value
-                    .trim();
-
-            /*
-             * Important:
-             * Do NOT send free-text feedback to GA4.
-             * It could contain personal information.
-             *
-             * For now we only acknowledge the feedback locally.
-             */
-
-            document
-                .getElementById("feedbackDetails")
-                .style.display = "none";
-
-            document
-                .getElementById("feedbackThanks")
-                .style.display = "block";
-
-        });
 
     document
         .getElementById("restartBtn")
