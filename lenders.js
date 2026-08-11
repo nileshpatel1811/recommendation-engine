@@ -14,8 +14,13 @@ const lenders = [
             trusted: true,
             emergency: false,
             highLtv: false,
-            transfer: false
+            transfer: false,
+            flexibleRepayment: false,
+            partialRelease: false
         },
+
+        repaymentStyle: "Yearly / maturity",
+        partialRelease: false,
 
         reasons: [
             "One of the lowest interest rates",
@@ -24,7 +29,6 @@ const lenders = [
         ],
 
         tradeoffs: [
-            "Physical gold must be brought to the branch",
             "Processing is slower than NBFCs"
         ]
     },
@@ -43,8 +47,13 @@ const lenders = [
             trusted: true,
             emergency: false,
             highLtv: true,
-            transfer: false
+            transfer: false,
+            flexibleRepayment: false,
+            partialRelease: false
         },
+
+        repaymentStyle: "Yearly / maturity",
+        partialRelease: false,
 
         reasons: [
             "Competitive interest rates",
@@ -53,8 +62,7 @@ const lenders = [
         ],
 
         tradeoffs: [
-            "Still slower than NBFCs",
-            "Physical branch visit required"
+            "Still slower than NBFCs"
         ]
     },
 
@@ -72,8 +80,13 @@ const lenders = [
             trusted: true,
             emergency: false,
             highLtv: false,
-            transfer: false
+            transfer: false,
+            flexibleRepayment: false,
+            partialRelease: false
         },
+
+        repaymentStyle: "Yearly / maturity",
+        partialRelease: false,
 
         reasons: [
             "Competitive interest",
@@ -101,8 +114,13 @@ const lenders = [
             trusted: true,
             emergency: false,
             highLtv: false,
-            transfer: false
+            transfer: false,
+            flexibleRepayment: false,
+            partialRelease: false
         },
+
+        repaymentStyle: "Yearly / maturity",
+        partialRelease: false,
 
         reasons: [
             "Highly trusted bank",
@@ -130,8 +148,13 @@ const lenders = [
             trusted: true,
             emergency: true,
             highLtv: false,
-            transfer: true
+            transfer: true,
+            flexibleRepayment: true,
+            partialRelease: true
         },
+
+        repaymentStyle: "Monthly",
+        partialRelease: true,
 
         reasons: [
             "Very fast approval",
@@ -158,8 +181,13 @@ const lenders = [
             trusted: true,
             emergency: true,
             highLtv: false,
-            transfer: true
+            transfer: true,
+            flexibleRepayment: true,
+            partialRelease: true
         },
+
+        repaymentStyle: "Monthly",
+        partialRelease: true,
 
         reasons: [
             "Very fast processing",
@@ -186,8 +214,13 @@ const lenders = [
             trusted: true,
             emergency: true,
             highLtv: false,
-            transfer: true
+            transfer: true,
+            flexibleRepayment: true,
+            partialRelease: true
         },
+
+        repaymentStyle: "Monthly",
+        partialRelease: true,
 
         reasons: [
             "Quick approval",

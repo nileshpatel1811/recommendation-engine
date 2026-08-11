@@ -103,14 +103,28 @@ function showQuestion(index) {
 
 function renderProgress(index) {
 
+    const visibleQuestions = questions.filter(question => {
+
+        if (!question.showIf) {
+            return true;
+        }
+
+        return question.showIf(state.answers);
+
+    });
+
+    const currentVisibleIndex =
+        visibleQuestions.indexOf(questions[index]);
+
     const percent =
-        ((index + 1) / questions.length) * 100;
+        ((currentVisibleIndex + 1) / visibleQuestions.length) * 100;
 
     return `
         <div class="progress">
 
             <div class="progress-text">
-                Question ${index + 1} of ${questions.length}
+                Question ${currentVisibleIndex + 1}
+                of ${visibleQuestions.length}
             </div>
 
             <div class="progress-bar">
@@ -124,7 +138,6 @@ function renderProgress(index) {
 
         </div>
     `;
-
 }
 
 /* ======================================================
@@ -424,7 +437,8 @@ function showRecommendation() {
         purpose: state.answers.purpose || "",
         priority: state.answers.priority || "",
         amount: state.answers.amount || "",
-        city: state.answers.city || "",
+        urgency: state.answers.urgency || "",
+        loan_style: state.answers.loanStyle || "",
         current_lender: state.answers.currentLender || ""
     });
 
@@ -433,107 +447,111 @@ function showRecommendation() {
 
     app.innerHTML = `
 
-<div class="result">
+        <div class="result">
 
-    <h1>Your Recommended Lenders</h1>
+            <h1>Your Recommended Lenders</h1>
 
-<p class="subtitle">
-    Based on what matters most to you, these are our recommended options.
-</p>
+            <p class="subtitle">
+                We matched lenders to your priorities, loan amount,
+                urgency and preferred loan style.
+            </p>
 
-${recommendations
-    .map(renderRecommendationCard)
-    .join("<hr>")}
+            ${recommendations
+        .map(renderRecommendationCard)
+        .join("<hr>")}
 
-<div class="disclaimer">
+            <div class="disclaimer">
 
-    Recommendations are based on publicly available lender information
-    and our independent research. Final interest rates, eligibility,
-    and approval depend on the lender's assessment of your gold and application.
+                Recommendations are based on our current lender research
+                and the information you provided.
 
-</div>
+                Lender rates, eligibility, repayment terms, charges and
+                approval can vary. Always confirm the current terms directly
+                with the lender before taking a loan.
 
-<div
-    class="feedback-box"
-    style="
+            </div>
+
+            <div
+                class="feedback-box"
+                style="
                     margin-top:30px;
                     padding:20px;
                     border:1px solid #e5e7eb;
                     border-radius:12px;
                     background:#f9fafb;
                 "
->
+            >
 
-    <h3 style="margin-top:0;">
-        Was this recommendation useful?
-    </h3>
+                <h3 style="margin-top:0;">
+                    Was this recommendation useful?
+                </h3>
 
-    <div
-    id="feedbackOptions"
-    style="
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-        margin-top:15px;
-    "
->
+                <div
+                    id="feedbackOptions"
+                    style="
+                        display:flex;
+                        flex-wrap:wrap;
+                        gap:10px;
+                        margin-top:15px;
+                    "
+                >
 
-    <button
-        class="feedback-btn"
-        data-feedback="yes"
-    >
-        👍 Yes, this helps
-    </button>
+                    <button
+                        class="feedback-btn"
+                        data-feedback="yes"
+                    >
+                        👍 Yes, this helps
+                    </button>
 
-    <button
-        class="feedback-btn"
-        data-feedback="somewhat"
-    >
-        🤔 Somewhat
-    </button>
+                    <button
+                        class="feedback-btn"
+                        data-feedback="somewhat"
+                    >
+                        🤔 Somewhat
+                    </button>
 
-    <button
-        class="feedback-btn"
-        data-feedback="no"
-    >
-        👎 Not useful
-    </button>
+                    <button
+                        class="feedback-btn"
+                        data-feedback="no"
+                    >
+                        👎 Not useful
+                    </button>
 
-</div>
+                </div>
 
-    <div
-    id="feedbackThanks"
-    style="
-        display:none;
-        margin-top:15px;
-        color:#166534;
-        font-weight:600;
-    "
-    >
-        Thanks — your feedback helps us improve.
-    </div>
+                <div
+                    id="feedbackThanks"
+                    style="
+                        display:none;
+                        margin-top:15px;
+                        color:#166534;
+                        font-weight:600;
+                    "
+                >
+                    Thanks — your feedback helps us improve.
+                </div>
 
+            </div>
 
-</div>
+            <br>
 
-<br>
+            <button id="restartBtn">
+                Start Again
+            </button>
 
-    <button id="restartBtn">
-        Start Again
-    </button>
-
-</div>
+        </div>
 
     `;
 
     trackEvent("recommendations_viewed", {
-        priority: state.answers.priority,
+        priority: state.answers.priority || "",
+        amount: state.answers.amount || "",
+        urgency: state.answers.urgency || "",
+        loan_style: state.answers.loanStyle || "",
         recommendation_1: recommendations[0]?.id || "",
         recommendation_2: recommendations[1]?.id || "",
         recommendation_3: recommendations[2]?.id || ""
     });
-
-    let selectedFeedback = null;
 
     document
         .querySelectorAll(".feedback-btn")
@@ -541,16 +559,11 @@ ${recommendations
 
             button.addEventListener("click", () => {
 
-                selectedFeedback =
-                    button.dataset.feedback;
-
                 document
                     .querySelectorAll(".feedback-btn")
                     .forEach(btn => {
-
                         btn.style.background = "";
                         btn.style.borderColor = "";
-
                     });
 
                 button.style.background = "#dbeafe";
@@ -558,13 +571,17 @@ ${recommendations
 
                 trackEvent("recommendation_feedback", {
 
-                    feedback: selectedFeedback,
+                    feedback: button.dataset.feedback,
 
                     priority: state.answers.priority || "",
+                    amount: state.answers.amount || "",
+                    urgency: state.answers.urgency || "",
+                    loan_style: state.answers.loanStyle || "",
+                    purpose: state.answers.purpose || "",
 
-                    city: state.answers.city || "",
-
-                    purpose: state.answers.purpose || ""
+                    recommendation_1: recommendations[0]?.id || "",
+                    recommendation_2: recommendations[1]?.id || "",
+                    recommendation_3: recommendations[2]?.id || ""
 
                 });
 
@@ -576,11 +593,341 @@ ${recommendations
 
         });
 
-
     document
         .getElementById("restartBtn")
         .addEventListener("click", renderLanding);
+}
 
+function getPersonalizedExplanation(lender) {
+
+    const answers = state.answers;
+
+    const reasons = [];
+    const tradeoffs = [];
+
+    // Priority
+    if (answers.priority === "Lowest interest") {
+        if (lender.lowInterestScore >= 4) {
+            reasons.push("Strong fit if keeping interest cost low is your priority.");
+        } else {
+            tradeoffs.push("Interest cost is not its strongest advantage compared with the bank options.");
+        }
+    }
+
+    if (answers.priority === "Fastest processing") {
+        if (lender.fastProcessingScore >= 4) {
+            reasons.push("Strong fit because you prioritised fast processing.");
+        }
+    }
+
+    // Urgency
+    if (answers.urgency === "Today") {
+        if (lender.emergencyScore >= 4) {
+            reasons.push("A strong match for your need to get the loan quickly.");
+        } else if (lender.fastProcessingScore <= 2) {
+            tradeoffs.push("Processing may be slower if you need the money today.");
+        }
+    }
+
+    // Loan amount
+    if (answers.amount === "Above ₹5 lakh") {
+        if (lender.largeLoanScore >= 4) {
+            reasons.push("A good fit for your larger loan requirement.");
+        }
+    }
+
+    // Existing relationship
+    if (answers.existingRelationship === "Yes") {
+        if (lender.existingCustomerScore >= 4) {
+            reasons.push("Your existing relationship may make this option more convenient.");
+        }
+    }
+
+    // Balance transfer
+    if (answers.purpose === "Transfer existing gold loan") {
+        if (lender.balanceTransferScore >= 4) {
+            reasons.push("A strong match for your existing gold-loan transfer requirement.");
+        }
+    }
+
+    // Fallback to existing lender data if personalized reasons are unavailable
+    if (reasons.length === 0 && lender.reasons) {
+        reasons.push(...lender.reasons.slice(0, 2));
+    }
+
+    if (tradeoffs.length === 0 && lender.tradeoffs) {
+        tradeoffs.push(...lender.tradeoffs.slice(0, 1));
+    }
+
+    return {
+        reasons: reasons.slice(0, 3),
+        tradeoffs: tradeoffs.slice(0, 2)
+    };
+}
+
+function getRecommendationExplanation(lender, index) {
+
+    const answers = state.answers;
+
+    const reasons = [];
+    const tradeoffs = [];
+
+    /*
+     * --------------------------------------------------
+     * PRIMARY PRIORITY
+     * --------------------------------------------------
+     */
+
+    if (answers.priority === "Lowest interest cost") {
+
+        if (lender.recommendedWhen.lowestInterest) {
+            reasons.push(
+                "Strong match because keeping interest cost low is your top priority."
+            );
+        } else {
+            tradeoffs.push(
+                "Its main advantage is not lower interest compared with the bank options."
+            );
+        }
+    }
+
+    if (answers.priority === "Highest loan amount") {
+
+        if (lender.recommendedWhen.highLtv) {
+            reasons.push(
+                "A stronger fit for borrowers prioritising a higher eligible loan amount."
+            );
+        } else {
+            tradeoffs.push(
+                "Another lender may be a stronger option if maximising the eligible loan amount is your main goal."
+            );
+        }
+    }
+
+    if (answers.priority === "Fastest processing") {
+
+        if (lender.recommendedWhen.fastest) {
+            reasons.push(
+                "Strong match because you prioritised faster processing."
+            );
+        } else {
+            tradeoffs.push(
+                "Processing may be slower than the faster NBFC options."
+            );
+        }
+    }
+
+    if (answers.priority === "Best overall balance") {
+
+        if (lender.recommendedWhen.lowestInterest) {
+            reasons.push(
+                "Offers a strong balance for borrowers who value competitive interest cost."
+            );
+        }
+
+        if (lender.recommendedWhen.fastest) {
+            reasons.push(
+                "Offers a strong balance for borrowers who value faster processing."
+            );
+        }
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * URGENCY
+     * --------------------------------------------------
+     */
+
+    if (answers.urgency === "Today") {
+
+        if (lender.recommendedWhen.fastest) {
+            reasons.push(
+                "Fits your need to get the loan quickly."
+            );
+        } else {
+            tradeoffs.push(
+                "Processing may take longer if you need the money today."
+            );
+        }
+    }
+
+    else if (answers.urgency === "Within a few days") {
+
+        if (lender.recommendedWhen.fastest) {
+            reasons.push(
+                "Its faster processing fits your short timeline."
+            );
+        }
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * LOAN AMOUNT
+     * --------------------------------------------------
+     */
+
+    if (
+        answers.amount === "Above ₹5 lakh" ||
+        answers.amount === "₹2 lakh - ₹5 lakh"
+    ) {
+
+        if (lender.recommendedWhen.highLtv) {
+            reasons.push(
+                "A stronger fit for your larger loan requirement."
+            );
+        }
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * LOAN STYLE
+     * --------------------------------------------------
+     */
+
+    if (
+        answers.loanStyle ===
+        "Lower cost, fewer payments"
+    ) {
+
+        if (lender.type === "Bank") {
+            reasons.push(
+                "Matches your preference for a lower-cost loan with fewer payment events."
+            );
+        } else {
+            tradeoffs.push(
+                "This type of lender may have a higher interest cost than bank options."
+            );
+        }
+    }
+
+
+    if (
+        answers.loanStyle ===
+        "Flexible payments and partial gold release"
+    ) {
+
+        if (lender.recommendedWhen.flexibleRepayment) {
+            reasons.push(
+                "Matches your preference for more flexible repayment."
+            );
+        }
+
+        if (lender.recommendedWhen.partialRelease) {
+            reasons.push(
+                "Matches your preference for partial gold release during the loan."
+            );
+        }
+
+        if (!lender.recommendedWhen.flexibleRepayment) {
+            tradeoffs.push(
+                "It may offer less repayment flexibility than some NBFC options."
+            );
+        }
+
+        if (!lender.recommendedWhen.partialRelease) {
+            tradeoffs.push(
+                "Partial gold release is not a feature we associate with this lender in our current MVP data."
+            );
+        }
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * SWITCHING
+     * --------------------------------------------------
+     */
+
+    if (
+        answers.purpose ===
+        "Switch an existing gold loan"
+    ) {
+
+        if (lender.recommendedWhen.transfer) {
+            reasons.push(
+                "Supports your goal of switching or transferring an existing gold loan."
+            );
+        }
+
+        else {
+            tradeoffs.push(
+                "Balance-transfer support is not one of this lender's strongest MVP matching factors."
+            );
+        }
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * REPAYMENT STYLE
+     * --------------------------------------------------
+     */
+
+    if (lender.repaymentStyle) {
+
+        if (
+            answers.loanStyle ===
+            "Lower cost, fewer payments"
+        ) {
+
+            if (lender.type === "Bank") {
+                reasons.push(
+                    `Repayment style: ${lender.repaymentStyle}.`
+                );
+            }
+
+        }
+
+        if (
+            answers.loanStyle ===
+            "Flexible payments and partial gold release"
+        ) {
+
+            if (lender.type === "NBFC") {
+                reasons.push(
+                    `Repayment style: ${lender.repaymentStyle}.`
+                );
+            }
+
+        }
+    }
+
+
+    /*
+     * --------------------------------------------------
+     * FALLBACK
+     * --------------------------------------------------
+     */
+
+    if (reasons.length === 0 && lender.reasons) {
+        reasons.push(...lender.reasons.slice(0, 2));
+    }
+
+    if (tradeoffs.length === 0 && lender.tradeoffs) {
+        tradeoffs.push(...lender.tradeoffs.slice(0, 1));
+    }
+
+
+    return {
+        reasons: reasons.slice(0, 3),
+        tradeoffs: tradeoffs.slice(0, 2)
+    };
+}
+
+function getMatchHeadline(lender, index) {
+
+    if (index === 0) {
+        return "Strongest match for your answers";
+    }
+
+    if (index === 1) {
+        return "Another strong option for your needs";
+    }
+
+    return "A third option worth comparing";
 }
 
 /* ======================================================
@@ -595,49 +942,70 @@ function renderRecommendationCard(lender, index) {
         "🥉"
     ];
 
+    const explanation =
+        getRecommendationExplanation(lender, index);
+
     return `
 
         <div class="recommendation-card">
 
             <h2>
-
                 ${medals[index]}
                 ${lender.name}
-
             </h2>
 
-            <p style="color:#2563eb;font-weight:600;">
-
-                ${lender.summary}
-
+            <p class="recommendation-summary">
+                ${getMatchHeadline(lender, index)}
             </p>
 
             <h3>
-                Why we recommend it
+                Why this matches you
             </h3>
 
-            <ul>
-
-                ${lender.reasons
-        .map(r => `<li>${r}</li>`)
-        .join("")}
-
-            </ul>
+            ${
+        explanation.reasons.length
+            ? `
+                        <ul>
+                            ${explanation.reasons
+                .map(reason =>
+                    `<li>${reason}</li>`
+                )
+                .join("")}
+                        </ul>
+                    `
+            : `
+                        <p>
+                            This lender matches several of the
+                            preferences you selected.
+                        </p>
+                    `
+    }
 
             <h3>
                 Things to know
             </h3>
 
-            <ul>
-
-                ${lender.tradeoffs
-        .map(t => `<li>${t}</li>`)
-        .join("")}
-
-            </ul>
+            ${
+        explanation.tradeoffs.length
+            ? `
+                        <ul>
+                            ${explanation.tradeoffs
+                .map(tradeoff =>
+                    `<li>${tradeoff}</li>`
+                )
+                .join("")}
+                        </ul>
+                    `
+            : `
+                        <p>
+                            As with any gold loan, confirm the current
+                            rate, charges, eligibility and repayment
+                            terms directly with the lender.
+                        </p>
+                    `
+    }
 
         </div>
 
     `;
-
 }
