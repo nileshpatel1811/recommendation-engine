@@ -1,138 +1,125 @@
 const lenders = [
 
     {
-        id: "canara",
-        name: "Canara Bank",
-        type: "Bank",
-
-        summary:
-            "Excellent choice if your priority is the lowest possible interest and you don't mind visiting a branch.",
-
-        recommendedWhen: {
-            lowestInterest: true,
-            fastest: false,
-            trusted: true,
-            emergency: false,
-            highLtv: false,
-            transfer: false,
-            flexibleRepayment: false,
-            partialRelease: false
-        },
-
-        repaymentStyle: "Yearly / maturity",
-        partialRelease: false,
-
-        reasons: [
-            "One of the lowest interest rates",
-            "Trusted public sector bank",
-            "Good for planned borrowing"
-        ],
-
-        tradeoffs: [
-            "Processing is slower than NBFCs"
-        ]
-    },
-
-    {
-        id: "bob",
-        name: "Bank of Baroda",
-        type: "Bank",
-
-        summary:
-            "Great balance between low interest and higher loan eligibility.",
-
-        recommendedWhen: {
-            lowestInterest: true,
-            fastest: false,
-            trusted: true,
-            emergency: false,
-            highLtv: true,
-            transfer: false,
-            flexibleRepayment: false,
-            partialRelease: false
-        },
-
-        repaymentStyle: "Yearly / maturity",
-        partialRelease: false,
-
-        reasons: [
-            "Competitive interest rates",
-            "Higher loan-to-value eligibility",
-            "Fast account opening"
-        ],
-
-        tradeoffs: [
-            "Still slower than NBFCs"
-        ]
-    },
-
-    {
-        id: "indian",
-        name: "Indian Bank",
-        type: "Bank",
-
-        summary:
-            "Good option for customers looking for competitive rates with relatively quick branch processing.",
-
-        recommendedWhen: {
-            lowestInterest: true,
-            fastest: false,
-            trusted: true,
-            emergency: false,
-            highLtv: false,
-            transfer: false,
-            flexibleRepayment: false,
-            partialRelease: false
-        },
-
-        repaymentStyle: "Yearly / maturity",
-        partialRelease: false,
-
-        reasons: [
-            "Competitive interest",
-            "Quick branch processing",
-            "Public sector bank"
-        ],
-
-        tradeoffs: [
-            "ITR may be required for larger loans",
-            "New account opening may take time"
-        ]
-    },
-
-    {
         id: "sbi",
         name: "State Bank of India",
         type: "Bank",
 
         summary:
-            "Best suited for borrowers who value trust, reputation and nationwide branch coverage.",
+            "Strong option for borrowers who want an established bank with competitive gold-loan pricing and multiple repayment structures.",
 
-        recommendedWhen: {
-            lowestInterest: true,
-            fastest: false,
-            trusted: true,
-            emergency: false,
-            highLtv: false,
-            transfer: false,
-            flexibleRepayment: false,
-            partialRelease: false
+        profile: {
+            interestPosition: "competitive",
+            speed: "moderate",
+            trust: "very_high",
+            loanAmount: "high",
+
+            repaymentOptions: [
+                "Bullet repayment",
+                "EMI",
+                "Overdraft"
+            ],
+
+            monthlyInterest: false,
+            overdraft: true,
+            bullet: true,
+
+            // Do not claim partial gold release.
+            partialGoldRelease: false
         },
 
-        repaymentStyle: "Yearly / maturity",
-        partialRelease: false,
-
         reasons: [
-            "Highly trusted bank",
-            "Competitive interest rates",
-            "Excellent branch network"
+            "Competitive gold-loan pricing",
+            "Multiple repayment structures",
+            "Strong nationwide banking presence"
         ],
 
         tradeoffs: [
-            "Can take longer than NBFCs",
-            "Branch queues can be longer"
+            "Some alternatives may offer faster processing",
+            "Product terms vary by gold-loan scheme"
         ]
     },
+
+
+    {
+        id: "canara",
+        name: "Canara Bank",
+        type: "Bank",
+
+        summary:
+            "Strong option when you want a competitive bank loan with options including Swarna Express, overdraft and monthly-interest products.",
+
+        profile: {
+            interestPosition: "competitive",
+            speed: "fast",
+            trust: "high",
+            loanAmount: "high",
+
+            repaymentOptions: [
+                "Bullet repayment",
+                "Monthly interest",
+                "Overdraft"
+            ],
+
+            monthlyInterest: true,
+            overdraft: true,
+            bullet: true,
+
+            partialGoldRelease: false
+        },
+
+        reasons: [
+            "Competitive interest rates",
+            "Swarna Express is designed for quick disbursement",
+            "Multiple Swarna loan structures"
+        ],
+
+        tradeoffs: [
+            "Specific terms depend on the Swarna product selected",
+            "Branch processing may vary by location"
+        ]
+    },
+
+
+    {
+        id: "hdfc",
+        name: "HDFC Bank",
+        type: "Bank",
+
+        summary:
+            "Good private-bank option for borrowers who value convenience, speed and multiple repayment choices.",
+
+        profile: {
+            interestPosition: "mid_to_competitive",
+            speed: "fast",
+            trust: "high",
+            loanAmount: "high",
+
+            repaymentOptions: [
+                "Monthly interest",
+                "Bullet repayment",
+                "Other product-specific options"
+            ],
+
+            monthlyInterest: true,
+            overdraft: false,
+            bullet: true,
+
+            partialGoldRelease: false
+        },
+
+        reasons: [
+            "Private-bank option with multiple repayment choices",
+            "Monthly interest repayment is available",
+            "HDFC publishes a quick branch turnaround for gold loans"
+        ],
+
+        tradeoffs: [
+            "Interest rates can vary substantially by customer and product",
+            "May not be the lowest-cost option for every borrower"
+        ]
+    },
+
 
     {
         id: "muthoot",
@@ -140,63 +127,41 @@ const lenders = [
         type: "NBFC",
 
         summary:
-            "Best choice when speed matters and you need money the same day.",
+            "Strong specialist option when processing convenience, multiple gold-loan schemes and flexible repayment are important.",
 
-        recommendedWhen: {
-            lowestInterest: false,
-            fastest: true,
-            trusted: true,
-            emergency: true,
-            highLtv: false,
-            transfer: true,
-            flexibleRepayment: true,
-            partialRelease: true
+        profile: {
+            interestPosition: "higher_variable",
+            speed: "fast",
+            trust: "high",
+            loanAmount: "very_high",
+
+            repaymentOptions: [
+                "Monthly interest",
+                "Prepayment",
+                "Scheme-specific repayment"
+            ],
+
+            monthlyInterest: true,
+            overdraft: false,
+            bullet: false,
+
+            // We have evidence for partial prepayment,
+            // but NOT enough evidence to call this
+            // "partial gold release".
+            partialGoldRelease: true,
+
+            partialPrepayment: true
         },
 
-        repaymentStyle: "Monthly",
-        partialRelease: true,
-
         reasons: [
-            "Very fast approval",
-            "Excellent for emergency loans",
-            "Supports balance transfer"
+            "Large range of gold-loan schemes",
+            "Monthly-interest options are available",
+            "Partial prepayment is supported"
         ],
 
         tradeoffs: [
-            "Interest rates are usually higher than banks"
-        ]
-    },
-
-    {
-        id: "manappuram",
-        name: "Manappuram Finance",
-        type: "NBFC",
-
-        summary:
-            "Strong option for borrowers looking for quick processing and flexible service.",
-
-        recommendedWhen: {
-            lowestInterest: false,
-            fastest: true,
-            trusted: true,
-            emergency: true,
-            highLtv: false,
-            transfer: true,
-            flexibleRepayment: true,
-            partialRelease: true
-        },
-
-        repaymentStyle: "Monthly",
-        partialRelease: true,
-
-        reasons: [
-            "Very fast processing",
-            "Supports balance transfer",
-            "Good for urgent requirements"
-        ],
-
-        tradeoffs: [
-            "Higher interest than most banks"
+            "Rates vary significantly by scheme",
+            "The lowest advertised rate may depend on repayment conditions"
         ]
     },
 
@@ -206,30 +171,114 @@ const lenders = [
         type: "NBFC",
 
         summary:
-            "Good digital-first option with quick processing and convenient customer experience.",
+            "Strong specialist option for borrowers who value quick processing, flexible gold-loan schemes and convenient repayment options.",
 
-        recommendedWhen: {
-            lowestInterest: false,
-            fastest: true,
-            trusted: true,
-            emergency: true,
-            highLtv: false,
-            transfer: true,
-            flexibleRepayment: true,
-            partialRelease: true
+        profile: {
+            interestPosition: "variable",
+            speed: "fast",
+            trust: "high",
+            loanAmount: "very_high",
+
+            repaymentOptions: [
+                "Bullet repayment",
+                "Monthly interest",
+                "Scheme-specific repayment"
+            ],
+
+            monthlyInterest: true,
+            overdraft: false,
+            bullet: true,
+
+            partialGoldRelease: true
         },
 
-        repaymentStyle: "Monthly",
-        partialRelease: true,
-
         reasons: [
-            "Quick approval",
-            "Good digital experience",
-            "Convenient application process"
+            "Multiple gold-loan schemes",
+            "Flexible repayment options",
+            "Fast processing through a specialist gold-loan lender"
         ],
 
         tradeoffs: [
-            "Interest is generally higher than public sector banks"
+            "Interest rates vary by scheme and customer profile",
+            "Final charges and repayment terms depend on the selected scheme"
+        ]
+    },
+    {
+        id: "bob",
+        name: "Bank of Baroda",
+        type: "Bank",
+
+        summary:
+            "Strong bank option for borrowers who value competitive pricing, high loan-to-value potential and relatively quick processing.",
+
+        profile: {
+            interestPosition: "competitive",
+            speed: "fast",
+            trust: "very_high",
+            loanAmount: "high",
+
+            repaymentOptions: [
+                "Bullet repayment",
+                "EMI",
+                "Partial repayment"
+            ],
+
+            monthlyInterest: false,
+            overdraft: false,
+            bullet: true,
+
+            partialGoldRelease: false,
+            partialPrepayment: true
+        },
+
+        reasons: [
+            "Competitive interest pricing",
+            "Up to 80% LTV for applicable product/loan band",
+            "Relatively quick processing based on current research"
+        ],
+
+        tradeoffs: [
+            "No direct balance-transfer support in the researched product",
+            "Partial repayment does not mean partial release of pledged gold",
+            "Exact LTV, rate and processing time depend on the applicable product and application"
+        ]
+    },
+    {
+        id: "manappuram",
+        name: "Manappuram Finance",
+        type: "NBFC",
+
+        summary:
+            "Strong specialist option for borrowers who value flexible repayment structures and quick gold-loan processing.",
+
+        profile: {
+            interestPosition: "variable",
+            speed: "fast",
+            trust: "high",
+            loanAmount: "very_high",
+
+            repaymentOptions: [
+                "Bullet repayment",
+                "Monthly prompt-interest payment",
+                "Scheme-specific repayment"
+            ],
+
+            monthlyInterest: true,
+            overdraft: false,
+            bullet: true,
+
+            partialGoldRelease: true
+        },
+
+        reasons: [
+            "Flexible repayment structures",
+            "Monthly prompt-payment option",
+            "Gold-loan specialist with large loan limits"
+        ],
+
+        tradeoffs: [
+            "Advertised effective rates depend on prompt repayment conditions",
+            "Actual rate and charges depend on the selected scheme"
         ]
     }
 

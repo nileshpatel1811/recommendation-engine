@@ -5,278 +5,644 @@ function getRecommendations(answers) {
         "Manappuram Finance": "manappuram",
         "Canara Bank": "canara",
         "State Bank of India": "sbi",
-        "Bank of Baroda": "bob",
-        "Indian Bank": "indian",
-        "IIFL Finance": "iifl"
+        "HDFC Bank": "hdfc",
+        "IIFL Finance": "iifl",
+        "Bank of Baroda": "bob"
     };
 
-    /*
-     * Start every lender at zero.
-     * We then add points based on what the borrower told us.
-     */
-    const scores = {};
-
-    lenders.forEach(lender => {
-        scores[lender.id] = 0;
-    });
-
-    /*
-     * --------------------------------------------------
-     * 1. PRIMARY PRIORITY
-     * --------------------------------------------------
-     */
-
-    const priorityWeights = {
-        "Lowest interest cost": {
-            lowestInterest: 5
-        },
-
-        "Highest loan amount": {
-            highLtv: 5
-        },
-
-        "Fastest processing": {
-            fastest: 5
-        },
-
-        "Best overall balance": {
-            lowestInterest: 2,
-            highLtv: 2,
-            fastest: 2,
-            trusted: 1
-        }
-    };
-
-    const priority = priorityWeights[answers.priority];
-
-    if (priority) {
-
-        lenders.forEach(lender => {
-
-            Object.entries(priority).forEach(([factor, points]) => {
-
-                if (lender.recommendedWhen[factor]) {
-                    scores[lender.id] += points;
-                }
-
-            });
-
-        });
-
-    }
+    const currentLender =
+        currentMap[answers.currentLender];
 
 
-    /*
-     * --------------------------------------------------
-     * 2. URGENCY
-     * --------------------------------------------------
-     */
+    const scoredLenders = lenders.map(lender => {
 
-    if (answers.urgency === "Today") {
+        const profile = lender.profile || {};
 
-        lenders.forEach(lender => {
+        let score = 0;
 
-            if (lender.recommendedWhen.emergency) {
-                scores[lender.id] += 4;
-            }
-
-            if (lender.recommendedWhen.fastest) {
-                scores[lender.id] += 2;
-            }
-
-        });
-
-    }
-
-    else if (answers.urgency === "Within a few days") {
-
-        lenders.forEach(lender => {
-
-            if (lender.recommendedWhen.fastest) {
-                scores[lender.id] += 2;
-            }
-
-        });
-
-    }
-
-    /*
-     * If the borrower isn't in a hurry,
-     * don't give the speed-focused lenders extra points.
-     */
+        const matches = [];
 
 
-    /*
-     * --------------------------------------------------
-     * 3. LOAN AMOUNT
-     * --------------------------------------------------
-     */
-
-    if (answers.amount === "Above ₹5 lakh") {
-
-        lenders.forEach(lender => {
-
-            if (lender.recommendedWhen.highLtv) {
-                scores[lender.id] += 3;
-            }
-
-        });
-
-    }
-
-    else if (answers.amount === "₹2 lakh - ₹5 lakh") {
-
-        lenders.forEach(lender => {
-
-            if (lender.recommendedWhen.highLtv) {
-                scores[lender.id] += 2;
-            }
-
-        });
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * 4. REPAYMENT / FLEXIBILITY PREFERENCE
-     * --------------------------------------------------
-     */
-
-    if (
-        answers.loanStyle ===
-        "Lower cost, fewer payments"
-    ) {
-
-        lenders.forEach(lender => {
-
-            if (lender.type === "Bank") {
-                scores[lender.id] += 3;
-            }
-
-        });
-
-    }
-
-    else if (
-        answers.loanStyle ===
-        "Flexible payments and partial gold release"
-    ) {
-
-        lenders.forEach(lender => {
-
-            if (lender.recommendedWhen.flexibleRepayment) {
-                scores[lender.id] += 3;
-            }
-
-            if (lender.recommendedWhen.partialRelease) {
-                scores[lender.id] += 3;
-            }
-
-        });
-
-    }
-
-
-    /*
-     * --------------------------------------------------
-     * 5. SWITCHING EXISTING LOAN
-     * --------------------------------------------------
-     */
-
-    if (answers.purpose === "Switch an existing gold loan") {
-
-        const current = currentMap[answers.currentLender];
+        // ==================================================
+        // PRIMARY PRIORITY
+        // ==================================================
 
         /*
-         * Never recommend the lender the borrower
-         * is currently using.
+         * The user's selected priority gets the largest
+         * weighting. Other answers refine the result.
          */
 
-        if (current) {
-            scores[current] = -999;
+
+        // --------------------------------------------------
+        // LOWEST INTEREST COST
+        // --------------------------------------------------
+
+        if (answers.priority === "Lowest interest cost") {
+
+            if (
+                profile.interestPosition === "competitive"
+            ) {
+
+                score += 20;
+
+                matches.push("competitive-interest");
+
+            }
+            else if (
+                profile.interestPosition === "mid_to_competitive"
+            ) {
+
+                score += 12;
+
+                matches.push("mid-competitive-interest");
+
+            }
+            else {
+
+                score += 5;
+
+            }
         }
 
-        /*
-         * Balance-transfer-friendly lenders get
-         * an additional boost.
-         */
 
-        lenders.forEach(lender => {
+        // --------------------------------------------------
+        // HIGHEST LOAN AMOUNT
+        // --------------------------------------------------
 
-            if (lender.recommendedWhen.transfer) {
-                scores[lender.id] += 3;
+        if (answers.priority === "Highest loan amount") {
+
+            if (
+                profile.loanAmount === "very_high"
+            ) {
+
+                score += 20;
+
+                matches.push("very-high-loan-amount");
+
+            }
+            else if (
+                profile.loanAmount === "high"
+            ) {
+
+                score += 15;
+
+                matches.push("high-loan-amount");
+
+            }
+            else {
+
+                score += 5;
+
+            }
+        }
+
+
+        // --------------------------------------------------
+        // FASTEST PROCESSING
+        // --------------------------------------------------
+
+        if (answers.priority === "Fastest processing") {
+
+            if (
+                profile.speed === "fast"
+            ) {
+
+                score += 20;
+
+                matches.push("fast-processing");
+
+            }
+            else if (
+                profile.speed === "moderate"
+            ) {
+
+                score += 12;
+
+            }
+            else {
+
+                score += 5;
+
+            }
+        }
+
+
+        // --------------------------------------------------
+        // BEST OVERALL BALANCE
+        // --------------------------------------------------
+
+        if (answers.priority === "Best overall balance") {
+
+            if (
+                profile.interestPosition === "competitive"
+            ) {
+
+                score += 8;
+
+                matches.push("competitive-interest");
+
+            }
+            else if (
+                profile.interestPosition === "mid_to_competitive"
+            ) {
+
+                score += 6;
+
+            }
+            else {
+
+                score += 3;
+
             }
 
-        });
 
-    }
+            if (
+                profile.speed === "fast"
+            ) {
 
+                score += 7;
 
-    /*
-     * --------------------------------------------------
-     * 6. GET TOP RESULTS
-     * --------------------------------------------------
-     */
+                matches.push("fast-processing");
 
-    const ranked = lenders
-        .map(lender => ({
-            lender,
-            score: scores[lender.id]
-        }))
-        .sort((a, b) => {
-
-            if (b.score !== a.score) {
-                return b.score - a.score;
             }
+            else if (
+                profile.speed === "moderate"
+            ) {
+
+                score += 5;
+
+            }
+            else {
+
+                score += 2;
+
+            }
+
+
+            if (
+                profile.trust === "very_high"
+            ) {
+
+                score += 4;
+
+            }
+            else if (
+                profile.trust === "high"
+            ) {
+
+                score += 3;
+
+            }
+
+
+            if (
+                profile.repaymentOptions &&
+                profile.repaymentOptions.length >= 2
+            ) {
+
+                score += 3;
+
+            }
+
+        }
+
+
+        // ==================================================
+        // URGENCY
+        // ==================================================
+
+        if (answers.urgency === "Today") {
 
             /*
-             * Stable tie-breaker:
-             * prefer lenders appearing earlier
-             * in the lender list.
+             * Do NOT eliminate banks.
+             *
+             * Banks can also provide same-day processing
+             * depending on product, branch and application.
              */
 
-            return lenders.indexOf(a.lender) -
-                lenders.indexOf(b.lender);
+            if (
+                profile.speed === "fast"
+            ) {
 
-        });
+                score += 5;
+
+                matches.push("fast-processing");
+
+            }
+            else if (
+                profile.speed === "moderate"
+            ) {
+
+                score += 3;
+
+            }
+            else {
+
+                score += 1;
+
+            }
+
+        }
 
 
-    /*
-     * Return the top three lenders.
-     */
+        if (
+            answers.urgency === "Within a few days"
+        ) {
 
-    return ranked
+            if (
+                profile.speed === "fast"
+            ) {
+
+                score += 3;
+
+            }
+            else if (
+                profile.speed === "moderate"
+            ) {
+
+                score += 2;
+
+            }
+            else {
+
+                score += 1;
+
+            }
+
+        }
+
+
+        // ==================================================
+        // LOAN STYLE
+        // ==================================================
+
+        if (
+            answers.loanStyle ===
+            "Lower cost, fewer payments"
+        ) {
+
+            if (
+                profile.interestPosition === "competitive"
+            ) {
+
+                score += 6;
+
+                matches.push("lower-cost");
+
+            }
+            else if (
+                profile.interestPosition ===
+                "mid_to_competitive"
+            ) {
+
+                score += 4;
+
+            }
+
+
+            if (profile.bullet) {
+
+                score += 3;
+
+                matches.push("bullet-repayment");
+
+            }
+
+        }
+
+
+        // --------------------------------------------------
+        // FLEXIBLE PAYMENTS
+        // --------------------------------------------------
+
+        if (
+            answers.loanStyle ===
+            "Flexible payments and partial gold release"
+        ) {
+
+            if (profile.partialGoldRelease) {
+
+                score += 8;
+
+                matches.push("partial-gold-release");
+
+            }
+
+            if (profile.monthlyInterest) {
+
+                score += 4;
+
+                matches.push("monthly-interest");
+
+            }
+
+            if (
+                profile.repaymentOptions &&
+                profile.repaymentOptions.length >= 2
+            ) {
+
+                score += 3;
+
+                matches.push("multiple-repayment-options");
+
+            }
+
+            if (profile.partialPrepayment) {
+
+                score += 3;
+
+                matches.push("partial-prepayment");
+
+            }
+
+        }
+
+
+        // ==================================================
+        // LOAN AMOUNT
+        // ==================================================
+
+        if (
+            answers.amount === "Above ₹5 lakh"
+        ) {
+
+            if (
+                profile.loanAmount === "very_high"
+            ) {
+
+                score += 4;
+
+            }
+            else if (
+                profile.loanAmount === "high"
+            ) {
+
+                score += 3;
+
+            }
+
+        }
+
+
+        if (
+            answers.amount === "₹2 lakh - ₹5 lakh"
+        ) {
+
+            if (
+                profile.loanAmount === "very_high"
+            ) {
+
+                score += 3;
+
+            }
+            else if (
+                profile.loanAmount === "high"
+            ) {
+
+                score += 2;
+
+            }
+
+        }
+
+
+        // ==================================================
+        // SWITCHING
+        // ==================================================
+
+        /*
+         * We currently do not award points for balance
+         * transfer because that field is not consistently
+         * verified across the current lender dataset.
+         *
+         * We simply remove the current lender below.
+         */
+
+
+        return {
+            lender,
+            score,
+            matches
+        };
+
+    });
+
+
+    // ==================================================
+    // REMOVE CURRENT LENDER WHEN SWITCHING
+    // ==================================================
+
+    let results = scoredLenders;
+
+    if (
+        answers.purpose ===
+        "Switch an existing gold loan" &&
+        currentLender
+    ) {
+
+        results =
+            results.filter(
+                result =>
+                    result.lender.id !== currentLender
+            );
+
+    }
+
+
+    // ==================================================
+    // SORT
+    // ==================================================
+
+    results.sort((a, b) => {
+
+        if (b.score !== a.score) {
+
+            return b.score - a.score;
+
+        }
+
+        return tieBreaker(
+            a.lender,
+            b.lender,
+            answers.priority
+        );
+
+    });
+
+
+    // ==================================================
+    // RETURN TOP 3
+    // ==================================================
+
+    return results
         .slice(0, 3)
         .map(result => {
 
-            const lender = JSON.parse(
-                JSON.stringify(result.lender)
-            );
+            const lender =
+                getLender(result.lender.id);
 
-            /*
-             * Keep the score available for the
-             * recommendation explanation/UI.
-             */
+            lender.matchScore =
+                result.score;
 
-            lender.matchScore = result.score;
+            lender.matchData =
+                result.matches;
 
             return lender;
 
         });
+
 }
 
 
-/*
- * Helper retained for compatibility with
- * the existing application.
- */
+/* ======================================================
+   TIE BREAKER
+   ====================================================== */
+
+function tieBreaker(a, b, priority) {
+
+    const profileA = a.profile || {};
+    const profileB = b.profile || {};
+
+
+    // --------------------------------------------------
+    // LOWEST INTEREST
+    // --------------------------------------------------
+
+    if (
+        priority ===
+        "Lowest interest cost"
+    ) {
+
+        const interestRank = {
+
+            "competitive": 4,
+            "mid_to_competitive": 3,
+            "variable": 2,
+            "higher_variable": 1
+
+        };
+
+        return (
+            (interestRank[
+                profileB.interestPosition
+                ] || 0)
+            -
+            (interestRank[
+                profileA.interestPosition
+                ] || 0)
+        );
+
+    }
+
+
+    // --------------------------------------------------
+    // HIGHEST LOAN AMOUNT
+    // --------------------------------------------------
+
+    if (
+        priority ===
+        "Highest loan amount"
+    ) {
+
+        const amountRank = {
+
+            "very_high": 4,
+            "high": 3,
+            "normal": 2,
+            "low": 1
+
+        };
+
+        return (
+            (amountRank[
+                profileB.loanAmount
+                ] || 0)
+            -
+            (amountRank[
+                profileA.loanAmount
+                ] || 0)
+        );
+
+    }
+
+
+    // --------------------------------------------------
+    // FASTEST PROCESSING
+    // --------------------------------------------------
+
+    if (
+        priority ===
+        "Fastest processing"
+    ) {
+
+        const speedRank = {
+
+            "fast": 4,
+            "moderate": 3,
+            "slow": 2
+
+        };
+
+        return (
+            (speedRank[
+                profileB.speed
+                ] || 0)
+            -
+            (speedRank[
+                profileA.speed
+                ] || 0)
+        );
+
+    }
+
+
+    // --------------------------------------------------
+    // BEST OVERALL
+    // --------------------------------------------------
+
+    if (
+        priority ===
+        "Best overall balance"
+    ) {
+
+        const trustRank = {
+
+            "very_high": 3,
+            "high": 2,
+            "normal": 1
+
+        };
+
+        return (
+            (trustRank[
+                profileB.trust
+                ] || 0)
+            -
+            (trustRank[
+                profileA.trust
+                ] || 0)
+        );
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* ======================================================
+   GET LENDER
+   ====================================================== */
 
 function getLender(id) {
 
     return JSON.parse(
         JSON.stringify(
-            lenders.find(l => l.id === id)
+            lenders.find(
+                lender =>
+                    lender.id === id
+            )
         )
     );
 

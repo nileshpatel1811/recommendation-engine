@@ -23,6 +23,11 @@ renderLanding();
 
 function renderLanding() {
 
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+
     app.innerHTML = `
         <div class="landing">
 
@@ -598,79 +603,16 @@ function showRecommendation() {
         .addEventListener("click", renderLanding);
 }
 
-function getPersonalizedExplanation(lender) {
-
-    const answers = state.answers;
-
-    const reasons = [];
-    const tradeoffs = [];
-
-    // Priority
-    if (answers.priority === "Lowest interest") {
-        if (lender.lowInterestScore >= 4) {
-            reasons.push("Strong fit if keeping interest cost low is your priority.");
-        } else {
-            tradeoffs.push("Interest cost is not its strongest advantage compared with the bank options.");
-        }
-    }
-
-    if (answers.priority === "Fastest processing") {
-        if (lender.fastProcessingScore >= 4) {
-            reasons.push("Strong fit because you prioritised fast processing.");
-        }
-    }
-
-    // Urgency
-    if (answers.urgency === "Today") {
-        if (lender.emergencyScore >= 4) {
-            reasons.push("A strong match for your need to get the loan quickly.");
-        } else if (lender.fastProcessingScore <= 2) {
-            tradeoffs.push("Processing may be slower if you need the money today.");
-        }
-    }
-
-    // Loan amount
-    if (answers.amount === "Above ₹5 lakh") {
-        if (lender.largeLoanScore >= 4) {
-            reasons.push("A good fit for your larger loan requirement.");
-        }
-    }
-
-    // Existing relationship
-    if (answers.existingRelationship === "Yes") {
-        if (lender.existingCustomerScore >= 4) {
-            reasons.push("Your existing relationship may make this option more convenient.");
-        }
-    }
-
-    // Balance transfer
-    if (answers.purpose === "Transfer existing gold loan") {
-        if (lender.balanceTransferScore >= 4) {
-            reasons.push("A strong match for your existing gold-loan transfer requirement.");
-        }
-    }
-
-    // Fallback to existing lender data if personalized reasons are unavailable
-    if (reasons.length === 0 && lender.reasons) {
-        reasons.push(...lender.reasons.slice(0, 2));
-    }
-
-    if (tradeoffs.length === 0 && lender.tradeoffs) {
-        tradeoffs.push(...lender.tradeoffs.slice(0, 1));
-    }
-
-    return {
-        reasons: reasons.slice(0, 3),
-        tradeoffs: tradeoffs.slice(0, 2)
-    };
-}
 
 function getRecommendationExplanation(lender, index) {
 
     const answers = state.answers;
 
+    const profile = lender.profile || {};
+
     const reasons = [];
     const tradeoffs = [];
+
 
     /*
      * --------------------------------------------------
@@ -680,56 +622,101 @@ function getRecommendationExplanation(lender, index) {
 
     if (answers.priority === "Lowest interest cost") {
 
-        if (lender.recommendedWhen.lowestInterest) {
+        if (
+            profile.interestPosition === "competitive"
+        ) {
+
             reasons.push(
-                "Strong match because keeping interest cost low is your top priority."
+                "A stronger match because keeping interest cost low is your top priority."
             );
+
         } else {
+
             tradeoffs.push(
-                "Its main advantage is not lower interest compared with the bank options."
+                "Its main advantage is not lower interest cost compared with the bank options."
             );
+
         }
     }
+
 
     if (answers.priority === "Highest loan amount") {
 
-        if (lender.recommendedWhen.highLtv) {
+        if (
+            profile.loanAmount === "very_high" ||
+            profile.loanAmount === "high"
+        ) {
+
             reasons.push(
-                "A stronger fit for borrowers prioritising a higher eligible loan amount."
+                "A stronger match if you need a larger gold-loan amount."
             );
+
         } else {
+
             tradeoffs.push(
-                "Another lender may be a stronger option if maximising the eligible loan amount is your main goal."
+                "Another lender may be a stronger option if maximising loan amount is your main goal."
             );
+
         }
     }
+
 
     if (answers.priority === "Fastest processing") {
 
-        if (lender.recommendedWhen.fastest) {
+        if (
+            profile.speed === "fast"
+        ) {
+
             reasons.push(
-                "Strong match because you prioritised faster processing."
+                "A stronger match because you prioritised faster processing."
             );
+
         } else {
+
             tradeoffs.push(
-                "Processing may be slower than the faster NBFC options."
+                "Some other lenders in our comparison may offer faster processing."
             );
+
         }
     }
 
-    if (answers.priority === "Best overall balance") {
 
-        if (lender.recommendedWhen.lowestInterest) {
+    if (
+        answers.priority === "Best overall recommendation" ||
+        answers.priority === "Best overall balance"
+    ) {
+
+        if (
+            profile.interestPosition === "competitive"
+        ) {
+
             reasons.push(
-                "Offers a strong balance for borrowers who value competitive interest cost."
+                "Offers a competitive option for borrowers who care about borrowing cost."
             );
+
         }
 
-        if (lender.recommendedWhen.fastest) {
+        if (
+            profile.speed === "fast"
+        ) {
+
             reasons.push(
-                "Offers a strong balance for borrowers who value faster processing."
+                "Offers a faster-processing option compared with some bank alternatives."
             );
+
         }
+
+        if (
+            profile.repaymentOptions &&
+            profile.repaymentOptions.length >= 2
+        ) {
+
+            reasons.push(
+                "Offers more than one repayment structure."
+            );
+
+        }
+
     }
 
 
@@ -741,24 +728,39 @@ function getRecommendationExplanation(lender, index) {
 
     if (answers.urgency === "Today") {
 
-        if (lender.recommendedWhen.fastest) {
+        if (
+            profile.speed === "fast"
+        ) {
+
             reasons.push(
-                "Fits your need to get the loan quickly."
+                "Its product offering makes processing speed a meaningful part of the match."
             );
+
         } else {
+
+            /*
+             * IMPORTANT:
+             * Do NOT say banks cannot provide money today.
+             */
+
             tradeoffs.push(
-                "Processing may take longer if you need the money today."
+                "Actual same-day availability can depend on the product, branch and application."
             );
+
         }
+
     }
 
-    else if (answers.urgency === "Within a few days") {
 
-        if (lender.recommendedWhen.fastest) {
-            reasons.push(
-                "Its faster processing fits your short timeline."
-            );
-        }
+    if (
+        answers.urgency === "Within a few days" &&
+        profile.speed === "fast"
+    ) {
+
+        reasons.push(
+            "Its faster-processing profile fits your short timeline."
+        );
+
     }
 
 
@@ -773,17 +775,30 @@ function getRecommendationExplanation(lender, index) {
         answers.amount === "₹2 lakh - ₹5 lakh"
     ) {
 
-        if (lender.recommendedWhen.highLtv) {
+        if (
+            profile.loanAmount === "very_high"
+        ) {
+
             reasons.push(
-                "A stronger fit for your larger loan requirement."
+                "Its loan-size profile makes it a strong option for larger borrowing needs."
             );
+
+        } else if (
+            profile.loanAmount === "high"
+        ) {
+
+            reasons.push(
+                "Its loan-size profile is suitable for a larger borrowing requirement."
+            );
+
         }
+
     }
 
 
     /*
      * --------------------------------------------------
-     * LOAN STYLE
+     * REPAYMENT PREFERENCE
      * --------------------------------------------------
      */
 
@@ -792,46 +807,113 @@ function getRecommendationExplanation(lender, index) {
         "Lower cost, fewer payments"
     ) {
 
-        if (lender.type === "Bank") {
+        if (
+            profile.interestPosition === "competitive"
+        ) {
+
             reasons.push(
-                "Matches your preference for a lower-cost loan with fewer payment events."
+                "Better aligned with your preference to keep borrowing cost down."
             );
-        } else {
-            tradeoffs.push(
-                "This type of lender may have a higher interest cost than bank options."
-            );
+
         }
+
+        if (
+            profile.bullet
+        ) {
+
+            reasons.push(
+                "A bullet repayment option is available for this lender."
+            );
+
+        }
+
+        if (
+            profile.interestPosition !== "competitive"
+        ) {
+
+            tradeoffs.push(
+                "Its published pricing may not be the strongest fit if minimizing interest cost is your main goal."
+            );
+
+        }
+
     }
 
+
+    /*
+     * --------------------------------------------------
+     * FLEXIBLE REPAYMENT
+     * --------------------------------------------------
+     */
 
     if (
         answers.loanStyle ===
         "Flexible payments and partial gold release"
     ) {
 
-        if (lender.recommendedWhen.flexibleRepayment) {
+        if (
+            profile.monthlyInterest
+        ) {
+
             reasons.push(
-                "Matches your preference for more flexible repayment."
+                "A monthly-interest repayment option is available."
             );
+
         }
 
-        if (lender.recommendedWhen.partialRelease) {
+        if (
+            profile.partialPrepayment
+        ) {
+
             reasons.push(
-                "Matches your preference for partial gold release during the loan."
+                "Partial prepayment is supported."
             );
+
         }
 
-        if (!lender.recommendedWhen.flexibleRepayment) {
-            tradeoffs.push(
-                "It may offer less repayment flexibility than some NBFC options."
+        if (
+            profile.repaymentOptions &&
+            profile.repaymentOptions.length >= 2
+        ) {
+
+            reasons.push(
+                "Multiple repayment structures are available."
             );
+
         }
 
-        if (!lender.recommendedWhen.partialRelease) {
-            tradeoffs.push(
-                "Partial gold release is not a feature we associate with this lender in our current MVP data."
+        if (profile.partialGoldRelease) {
+
+            reasons.push(
+                "Part-release of pledged gold is supported, subject to the applicable product terms."
             );
+
+        } else {
+
+            tradeoffs.push(
+                "We could not verify partial gold release for this lender's current product."
+            );
+
         }
+
+        /*
+         * Do NOT claim partial gold release.
+         *
+         * Partial prepayment and partial release of pledged
+         * gold are not necessarily the same thing.
+         */
+
+        if (
+            !profile.monthlyInterest &&
+            !profile.partialPrepayment
+        ) {
+
+            tradeoffs.push(
+                "This lender may offer less repayment flexibility than some alternatives."
+            );
+
+        }
+
     }
 
 
@@ -846,53 +928,15 @@ function getRecommendationExplanation(lender, index) {
         "Switch an existing gold loan"
     ) {
 
-        if (lender.recommendedWhen.transfer) {
-            reasons.push(
-                "Supports your goal of switching or transferring an existing gold loan."
-            );
-        }
+        /*
+         * We deliberately don't claim transfer support
+         * unless it has been verified for the specific product.
+         */
 
-        else {
-            tradeoffs.push(
-                "Balance-transfer support is not one of this lender's strongest MVP matching factors."
-            );
-        }
-    }
+        reasons.push(
+            "This option is included as an alternative lender while you compare your existing loan."
+        );
 
-
-    /*
-     * --------------------------------------------------
-     * REPAYMENT STYLE
-     * --------------------------------------------------
-     */
-
-    if (lender.repaymentStyle) {
-
-        if (
-            answers.loanStyle ===
-            "Lower cost, fewer payments"
-        ) {
-
-            if (lender.type === "Bank") {
-                reasons.push(
-                    `Repayment style: ${lender.repaymentStyle}.`
-                );
-            }
-
-        }
-
-        if (
-            answers.loanStyle ===
-            "Flexible payments and partial gold release"
-        ) {
-
-            if (lender.type === "NBFC") {
-                reasons.push(
-                    `Repayment style: ${lender.repaymentStyle}.`
-                );
-            }
-
-        }
     }
 
 
@@ -902,12 +946,27 @@ function getRecommendationExplanation(lender, index) {
      * --------------------------------------------------
      */
 
-    if (reasons.length === 0 && lender.reasons) {
-        reasons.push(...lender.reasons.slice(0, 2));
+    if (
+        reasons.length === 0 &&
+        lender.reasons
+    ) {
+
+        reasons.push(
+            ...lender.reasons.slice(0, 2)
+        );
+
     }
 
-    if (tradeoffs.length === 0 && lender.tradeoffs) {
-        tradeoffs.push(...lender.tradeoffs.slice(0, 1));
+
+    if (
+        tradeoffs.length === 0 &&
+        lender.tradeoffs
+    ) {
+
+        tradeoffs.push(
+            ...lender.tradeoffs.slice(0, 1)
+        );
+
     }
 
 
@@ -915,19 +974,20 @@ function getRecommendationExplanation(lender, index) {
         reasons: reasons.slice(0, 3),
         tradeoffs: tradeoffs.slice(0, 2)
     };
+
 }
 
 function getMatchHeadline(lender, index) {
 
     if (index === 0) {
-        return "Strongest match for your answers";
+        return "Strongest match based on your answers";
     }
 
     if (index === 1) {
-        return "Another strong option for your needs";
+        return "Another strong option to compare";
     }
 
-    return "A third option worth comparing";
+    return "Another option worth considering";
 }
 
 /* ======================================================
