@@ -179,7 +179,6 @@ function renderQuestion(question) {
             <input
                 id="textAnswer"
                 value="${state.answers[question.id] || ""}"
-                id="textAnswer"
                 type="text"
                 placeholder="Type here..."
             >
@@ -600,7 +599,19 @@ function showRecommendation() {
 
     document
         .getElementById("restartBtn")
-        .addEventListener("click", renderLanding);
+        .addEventListener("click", () => {
+
+            state.currentQuestion = 0;
+            state.answers = {};
+
+            renderLanding();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        });
 }
 
 
@@ -886,12 +897,6 @@ function getRecommendationExplanation(lender, index) {
 
             reasons.push(
                 "Part-release of pledged gold is supported, subject to the applicable product terms."
-            );
-
-        } else {
-
-            tradeoffs.push(
-                "We could not verify partial gold release for this lender's current product."
             );
 
         }

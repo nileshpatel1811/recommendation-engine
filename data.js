@@ -60,7 +60,6 @@ const questions = [
             "Canara Bank",
             "State Bank of India",
             "Bank of Baroda",
-            "Indian Bank",
             "IIFL Finance",
             "Other"
         ],

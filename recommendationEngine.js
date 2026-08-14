@@ -464,7 +464,8 @@ function getRecommendations(answers) {
         return tieBreaker(
             a.lender,
             b.lender,
-            answers.priority
+            answers.priority,
+            answers.loanStyle
         );
 
     });
@@ -498,7 +499,7 @@ function getRecommendations(answers) {
    TIE BREAKER
    ====================================================== */
 
-function tieBreaker(a, b, priority) {
+function tieBreaker(a, b, priority, loanStyle) {
 
     const profileA = a.profile || {};
     const profileB = b.profile || {};
