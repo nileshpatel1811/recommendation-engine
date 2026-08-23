@@ -29,7 +29,7 @@ function renderLanding() {
             <h1>Compare Top Gold Loans in Surat</h1>
 
             <p class="subtitle">
-                Compare lowest interest rates & highest per-gram valuation across 5+ verified banks & NBFCs.
+                Compare lowest interest rates & highest per-gram valuation across 7 verified banks & NBFCs.
             </p>
 
             <div class="quick-start-box" style="margin: 24px 0;">
@@ -55,7 +55,7 @@ function renderLanding() {
 
             <p class="trust" style="margin-top: 20px; line-height: 1.6;">
                 ✓ <strong>100% Free & Spam-Free</strong> — No mobile number or OTP required<br>
-                ✓ <strong>Direct Comparison</strong> — Check SBI, Muthoot, HDFC & Manappuram<br>
+                ✓ <strong>Direct Comparison</strong> — Compare 7 Top Lenders (SBI, Muthoot, BoB, HDFC & IIFL)<br>
                 ✓ <strong>Takes 45 seconds</strong> — Instant results on your screen
             </p>
 
