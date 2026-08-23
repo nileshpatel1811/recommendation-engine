@@ -21,19 +21,15 @@
     <meta name="twitter:title" content="Gold Loan Comparison | Gold Loan Match">
     <meta name="twitter:description" content="Compare gold loan lenders based on what matters most to you.">
 
-    <!-- Non-Blocking Google Fonts Preconnect & Load -->
+    <!-- Fonts (Standard with display=swap) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
-    <noscript>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
-    </noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Google Analytics (Async) -->
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-0Q5KC055M7"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -217,12 +213,12 @@
 
 </div>
 
-<!-- Deferred Scripts (Execute in order without blocking rendering) -->
-<script src="cities.js" defer></script>
-<script src="lenders.js" defer></script>
-<script src="recommendationEngine.js" defer></script>
-<script src="data.js" defer></script>
-<script src="app.js" defer></script>
+<!-- Application Scripts -->
+<script src="cities.js"></script>
+<script src="lenders.js"></script>
+<script src="recommendationEngine.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
