@@ -6,67 +6,39 @@
 
     <!-- Primary SEO -->
     <title>Gold Loan Comparison | Find the Best Gold Loan for You</title>
-
-    <meta
-            name="description"
-            content="Compare gold loan lenders based on interest cost, loan amount, processing speed and your needs. Find gold loan options that may be the best fit for you."
-    >
-
-    <link
-            rel="canonical"
-            href="https://goldloanmatch.netlify.app/"
-    >
+    <meta name="description" content="Compare gold loan lenders based on interest cost, loan amount, processing speed and your needs. Find gold loan options that may be the best fit for you.">
+    <link rel="canonical" href="https://goldloanmatch.netlify.app/">
 
     <!-- Open Graph -->
     <meta property="og:title" content="Gold Loan Comparison | Gold Loan Match">
-    <meta
-            property="og:description"
-            content="Compare gold loan lenders based on interest cost, loan amount and processing speed."
-    >
-    <meta
-            property="og:url"
-            content="https://goldloanmatch.netlify.app/"
-    >
+    <meta property="og:description" content="Compare gold loan lenders based on interest cost, loan amount and processing speed.">
+    <meta property="og:url" content="https://goldloanmatch.netlify.app/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Gold Loan Match">
 
-    <!-- Twitter / social sharing -->
+    <!-- Twitter / Social Sharing -->
     <meta name="twitter:card" content="summary">
-    <meta
-            name="twitter:title"
-            content="Gold Loan Comparison | Gold Loan Match"
-    >
-    <meta
-            name="twitter:description"
-            content="Compare gold loan lenders based on what matters most to you."
-    >
+    <meta name="twitter:title" content="Gold Loan Comparison | Gold Loan Match">
+    <meta name="twitter:description" content="Compare gold loan lenders based on what matters most to you.">
 
-    <!-- Fonts -->
+    <!-- Non-Blocking Google Fonts Preconnect & Load -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    </noscript>
 
-    <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-            rel="stylesheet"
-    >
-
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
 
-    <!-- Google Analytics -->
-    <script
-            async
-            src="https://www.googletagmanager.com/gtag/js?id=G-0Q5KC055M7">
-    </script>
-
+    <!-- Google Analytics (Async) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0Q5KC055M7"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
-
-        function gtag() {
-            dataLayer.push(arguments);
-        }
-
+        function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-0Q5KC055M7');
     </script>
 </head>
@@ -76,19 +48,15 @@
 <div class="page">
 
     <header class="site-header">
-
         <div class="logo">
             🟡 Gold Loan Match
         </div>
-
         <div class="tagline">
             Find the right lender, not just the lowest interest rate.
         </div>
-
     </header>
 
     <main>
-
         <!-- Interactive product -->
         <section class="app-section">
             <div id="app">
@@ -97,13 +65,8 @@
         </section>
 
         <!-- SEO / informational content -->
-        <section
-                class="seo-content"
-                aria-labelledby="gold-loan-comparison-heading"
-        >
-
+        <section class="seo-content" aria-labelledby="gold-loan-comparison-heading">
             <div class="seo-inner">
-
                 <h1 id="gold-loan-comparison-heading">
                     Gold Loan Comparison — Find the Right Lender for You
                 </h1>
@@ -117,7 +80,6 @@
                 </p>
 
                 <h2>How Gold Loan Match Works</h2>
-
                 <p>
                     Answer a few simple questions about your gold loan requirement.
                     We use your answers to identify lenders that may be a better
@@ -132,7 +94,6 @@
                 </p>
 
                 <h2>What Should You Compare Before Taking a Gold Loan?</h2>
-
                 <p>
                     Interest rate is an important part of the cost of a gold loan,
                     but it is not the only factor worth considering. Borrowers may
@@ -149,7 +110,6 @@
                 </p>
 
                 <h2>Banks vs. Gold Loan NBFCs</h2>
-
                 <p>
                     Banks and non-bank financial companies (NBFCs) can differ in
                     their gold loan products, processes and customer experience.
@@ -165,7 +125,6 @@
                 </p>
 
                 <h2>Gold Loan Comparison in Surat and Other Cities</h2>
-
                 <p>
                     Gold loan availability and branch access can vary by location.
                     If you are comparing lenders in your city, check local branch
@@ -180,7 +139,6 @@
                 </p>
 
                 <h2>About Gold Loan Match</h2>
-
                 <p>
                     Gold Loan Match is an independent comparison tool designed to
                     help borrowers make more informed gold loan decisions. We are
@@ -201,14 +159,10 @@
                         Gold Loan Comparison Guide →
                     </a>
                 </p>
-
             </div>
-
         </section>
-
     </main>
 
-    <!-- Financial / Personal Loan Disclosures -->
     <!-- Mandatory Financial & Personal Loan Disclosures -->
     <footer class="site-footer" style="padding: 2.5rem 1rem; background: #f8fafc; border-top: 2px solid #e2e8f0; font-size: 0.82rem; color: #475569; line-height: 1.6;">
         <div style="max-width: 800px; margin: 0 auto;">
@@ -263,12 +217,12 @@
 
 </div>
 
-<script src="cities.js"></script>
-<script src="lenders.js"></script>
-<script src="recommendationEngine.js"></script>
-<script src="data.js"></script>
-<script src="app.js"></script>
+<!-- Deferred Scripts (Execute in order without blocking rendering) -->
+<script src="cities.js" defer></script>
+<script src="lenders.js" defer></script>
+<script src="recommendationEngine.js" defer></script>
+<script src="data.js" defer></script>
+<script src="app.js" defer></script>
 
 </body>
-
 </html>
