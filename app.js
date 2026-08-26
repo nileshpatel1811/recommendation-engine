@@ -24,54 +24,55 @@ function renderLanding() {
     });
 
     app.innerHTML = `
-        <div class="landing">
+        <div class="landing" style="text-align: center; max-width: 500px; margin: 0 auto; padding: 10px 12px;">
 
-            <h1>Compare Top Gold Loans in Surat</h1>
+            <h1 style="font-size: 1.65rem; font-weight: 800; color: #0f172a; margin-bottom: 8px; line-height: 1.25;">
+                Compare Top Gold Loans in Surat
+            </h1>
 
-            <p class="subtitle">
-                Compare lowest interest rates & highest per-gram valuation across 7 verified banks & NBFCs.
+            <p class="subtitle" style="font-size: 0.95rem; color: #475569; margin-bottom: 16px; line-height: 1.45;">
+                Compare lowest interest rates & highest per-gram valuation across verified banks & NBFCs.
             </p>
 
-            <div class="quick-start-box" style="margin: 24px 0;">
-                <p style="font-weight: 600; margin-bottom: 12px; font-size: 1.1rem; color: #1e293b;">
-                    Step 1: Select your required loan amount
+            <!-- Lenders directly visible above the fold -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px;">
+                <span style="background:#f8fafc; border: 1px solid #cbd5e1; padding: 4px 9px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #1e293b;">🏛️ SBI</span>
+                <span style="background:#f8fafc; border: 1px solid #cbd5e1; padding: 4px 9px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #1e293b;">🟡 Muthoot</span>
+                <span style="background:#f8fafc; border: 1px solid #cbd5e1; padding: 4px 9px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #1e293b;">🏦 HDFC Bank</span>
+                <span style="background:#f8fafc; border: 1px solid #cbd5e1; padding: 4px 9px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #1e293b;">🏛️ Bank of Baroda</span>
+                <span style="background:#f8fafc; border: 1px solid #cbd5e1; padding: 4px 9px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #1e293b;">🟡 IIFL Finance</span>
+            </div>
+
+            <!-- Interactive Conversion Card -->
+            <div class="quick-start-box" style="background: #ffffff; border: 2px solid #e2e8f0; border-radius: 14px; padding: 18px 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+                <p style="font-weight: 700; margin-bottom: 14px; font-size: 1.05rem; color: #0f172a;">
+                    Select your required loan amount to begin:
                 </p>
 
-                <div class="amount-pills" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 420px; margin: 0 auto;">
-                    <button class="amount-btn option" data-amount="Below ₹50,000" style="padding: 12px 8px; font-weight: 600;">
-                        ₹25k – ₹50k
+                <div class="amount-pills" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <button class="amount-btn option" data-amount="Below ₹50,000" style="padding: 14px 10px; font-weight: 700; font-size: 0.95rem; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; cursor: pointer; color: #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: center; align-items: center; gap: 4px;">
+                        ₹25k – ₹50k <span style="color: #2563eb;">→</span>
                     </button>
-                    <button class="amount-btn option" data-amount="₹50,000 - ₹2 lakh" style="padding: 12px 8px; font-weight: 600;">
-                        ₹50k – ₹2 Lakh
+                    <button class="amount-btn option popular" data-amount="₹50,000 - ₹2 lakh" style="padding: 14px 10px; font-weight: 700; font-size: 0.95rem; border-radius: 8px; border: 2px solid #2563eb; background: #eff6ff; cursor: pointer; color: #1e40af; box-shadow: 0 2px 6px rgba(37,99,235,0.12); display: flex; justify-content: center; align-items: center; gap: 4px;">
+                        ₹50k – ₹2 Lakh <span style="color: #2563eb;">→</span>
                     </button>
-                    <button class="amount-btn option" data-amount="₹2 lakh - ₹5 lakh" style="padding: 12px 8px; font-weight: 600;">
-                        ₹2 – ₹5 Lakhs
+                    <button class="amount-btn option" data-amount="₹2 lakh - ₹5 lakh" style="padding: 14px 10px; font-weight: 700; font-size: 0.95rem; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; cursor: pointer; color: #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: center; align-items: center; gap: 4px;">
+                        ₹2 – ₹5 Lakhs <span style="color: #2563eb;">→</span>
                     </button>
-                    <button class="amount-btn option" data-amount="Above ₹5 lakh" style="padding: 12px 8px; font-weight: 600;">
-                        ₹5 Lakhs+
+                    <button class="amount-btn option" data-amount="Above ₹5 lakh" style="padding: 14px 10px; font-weight: 700; font-size: 0.95rem; border-radius: 8px; border: 1.5px solid #cbd5e1; background: #ffffff; cursor: pointer; color: #1e293b; box-shadow: 0 2px 4px rgba(0,0,0,0.02); display: flex; justify-content: center; align-items: center; gap: 4px;">
+                        ₹5 Lakhs+ <span style="color: #2563eb;">→</span>
                     </button>
+                </div>
+
+                <div style="margin-top: 14px; font-size: 0.8rem; color: #059669; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                    <span>⚡ 100% Free • No Mobile Number or OTP Required</span>
                 </div>
             </div>
 
-            <p class="trust" style="margin-top: 20px; line-height: 1.6;">
-                ✓ <strong>100% Free & Spam-Free</strong> — No mobile number or OTP required<br>
-                ✓ <strong>Direct Comparison</strong> — Compare 7 Top Lenders (SBI, Muthoot, BoB, HDFC & IIFL)<br>
-                ✓ <strong>Takes 45 seconds</strong> — Instant results on your screen
-            </p>
-
-            <div class="lender-strip" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
-                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
-                    Lenders Compared in Surat
-                </p>
-                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: #334155;">
-                    <span style="background:#f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">🏛️ SBI</span>
-                    <span style="background:#f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">🟡 Muthoot Finance</span>
-                    <span style="background:#f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">🏦 HDFC Bank</span>
-                    <span style="background:#f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">🏛️ Bank of Baroda</span>
-                    <span style="background:#f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">🟡 IIFL Finance</span>
-                    <span style="background:#f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">🟡 Manappuram</span>
-                    <span style="background:#f1f5f9; padding: 6px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">🏛️ Canara Bank</span>
-                </div>
+            <!-- Trust Points -->
+            <div style="margin-top: 20px; font-size: 0.85rem; color: #64748b; line-height: 1.6; text-align: left; background: #f8fafc; border-radius: 10px; padding: 12px 16px;">
+                <div>✓ <strong>Direct Comparison:</strong> Compare 7 Top Lenders across Surat</div>
+                <div>✓ <strong>Fast:</strong> Takes only 45 seconds for instant on-screen results</div>
             </div>
 
         </div>
@@ -81,8 +82,9 @@ function renderLanding() {
         button.addEventListener("click", () => {
             const selectedAmount = button.dataset.amount;
 
-            button.style.background = "#dbeafe";
-            button.style.borderColor = "#2563eb";
+            button.style.background = "#2563eb";
+            button.style.color = "#ffffff";
+            button.style.borderColor = "#1d4ed8";
 
             state.answers = {
                 amount: selectedAmount
@@ -98,7 +100,6 @@ function renderLanding() {
                 answer: selectedAmount
             });
 
-            // Find index of the first question that isn't 'amount'
             let nextIdx = 0;
             while (
                 nextIdx < questions.length &&
@@ -249,8 +250,9 @@ function bindQuestion(question) {
 
     document.querySelectorAll(".option").forEach(button => {
         button.addEventListener("click", () => {
-            button.style.background = "#dbeafe";
-            button.style.borderColor = "#2563eb";
+            button.style.background = "#2563eb";
+            button.style.color = "#ffffff";
+            button.style.borderColor = "#1d4ed8";
 
             state.answers[question.id] = button.dataset.value;
 
