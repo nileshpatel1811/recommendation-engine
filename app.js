@@ -6,8 +6,17 @@ const state = {
 };
 
 function trackEvent(eventName, parameters = {}) {
+    // Google Analytics
     if (typeof gtag === "function") {
         gtag("event", eventName, parameters);
+    }
+    // Send event to Meta Pixel
+    if (typeof fbq === "function") {
+        if (eventName === "questionnaire_completed") {
+            fbq("track", "Lead", parameters);
+        } else {
+            fbq("trackCustom", eventName, parameters);
+        }
     }
 }
 
