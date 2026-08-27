@@ -559,3 +559,185 @@ hr {
     }
 
 }
+
+.rate-snapshot-card {
+
+    background: #ffffff;
+
+    border: 1.5px solid #e2e8f0;
+
+    border-radius: 12px;
+
+    padding: 14px 12px;
+
+    margin: 16px 0 20px 0;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.03);
+
+    text-align: left;
+
+}
+
+.rate-snapshot-card .table-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 10px;
+
+}
+
+.rate-snapshot-card h3 {
+
+    font-size: 0.95rem;
+
+    margin: 0;
+
+    color: #0f172a;
+
+    font-weight: 700;
+
+}
+
+.live-badge {
+
+    background: #e0f2fe;
+
+    color: #0369a1;
+
+    font-size: 0.72rem;
+
+    padding: 2px 7px;
+
+    border-radius: 999px;
+
+    font-weight: 600;
+
+}
+
+.table-responsive {
+
+    overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+.rate-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    font-size: 0.82rem;
+
+}
+
+.rate-table th {
+
+    background: #f8fafc;
+
+    padding: 7px 8px;
+
+    color: #64748b;
+
+    font-weight: 600;
+
+    border-bottom: 1.5px solid #e2e8f0;
+
+    white-space: nowrap;
+
+}
+
+.rate-table td {
+
+    padding: 9px 8px;
+
+    border-bottom: 1px solid #f1f5f9;
+
+    color: #334155;
+
+    white-space: nowrap;
+
+}
+
+.rate-highlight {
+
+    color: #15803d;
+
+    font-weight: 700;
+
+}
+
+.rate-footnote {
+
+    font-size: 0.72rem;
+
+    color: #64748b;
+
+    margin-top: 8px;
+
+    margin-bottom: 0;
+
+    line-height: 1.35;
+
+}
+
+.match-details-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 8px;
+
+    padding: 10px;
+
+    margin: 12px 0 16px 0;
+
+    text-align: left;
+
+}
+
+.match-detail-item {
+
+    font-size: 0.8rem;
+
+}
+
+.match-detail-item .detail-label {
+
+    display: block;
+
+    color: #64748b;
+
+    font-size: 0.72rem;
+
+    text-transform: uppercase;
+
+    font-weight: 600;
+
+}
+
+.match-detail-item .detail-value {
+
+    font-weight: 700;
+
+    color: #0f172a;
+
+}
+
+.match-detail-item .detail-value.rate-green {
+
+    color: #15803d;
+
+}

@@ -43,6 +43,47 @@ function renderLanding() {
                 Compare lowest interest rates & highest per-gram valuation across verified banks & NBFCs.
             </p>
 
+            <!-- Live Rate Snapshot Table -->
+            <div class="rate-snapshot-card">
+                <div class="table-header">
+                    <h3>📊 Surat Benchmark Gold Loan Rates</h3>
+                    <span class="live-badge">Updated Aug 2026</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="rate-table">
+                        <thead>
+                            <tr>
+                                <th>Lender Type</th>
+                                <th>Expected Rate</th>
+                                <th>Speed</th>
+                                <th>Key Advantage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>🏛️ SBI / Bank of Baroda / Canara</strong></td>
+                                <td><span class="rate-highlight">8.75% – 9.50%</span></td>
+                                <td>1–2 Days</td>
+                                <td>Lowest Total Interest</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🏦 HDFC Bank</strong></td>
+                                <td><span class="rate-highlight">9.00% – 16.00%</span></td>
+                                <td>Same Day</td>
+                                <td>High LTV & Account Perks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🟡 Muthoot / Manappuram / IIFL</strong></td>
+                                <td><span class="rate-highlight">10.50% – 16.00%</span></td>
+                                <td>30 Mins</td>
+                                <td>Instant Cash, Minimal Docs</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="rate-footnote">⚠️ Rates depend on required speed, loan amount, and repayment structure.</p>
+            </div>
+
             <!-- Lenders directly visible above the fold -->
             <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 20px;">
                 <span style="background:#f8fafc; border: 1px solid #cbd5e1; padding: 4px 9px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; color: #1e293b;">🏛️ SBI</span>
@@ -641,6 +682,33 @@ function renderRecommendationCard(lender, index) {
     const medals = ["🥇", "🥈", "🥉"];
     const explanation = getRecommendationExplanation(lender, index);
 
+    // Dynamic rate & speed mapping across your 7 lenders
+    let rateText = "8.75% – 9.50% p.a.";
+    let speedText = "📅 1 – 2 Days";
+
+    if (lender.id === "sbi") {
+        rateText = "8.75% – 9.50% p.a.";
+        speedText = "📅 1 – 2 Days";
+    } else if (lender.id === "bob") {
+        rateText = "8.80% – 9.50% p.a.";
+        speedText = "📅 1 – 2 Days";
+    } else if (lender.id === "canara") {
+        rateText = "8.75% – 10.25% p.a.";
+        speedText = "⚡ Same Day (Swarna)";
+    } else if (lender.id === "hdfc") {
+        rateText = "9.00% – 16.00% p.a.";
+        speedText = "⏱️ Same Day";
+    } else if (lender.id === "muthoot") {
+        rateText = "11.90% – 16.00% p.a.";
+        speedText = "⚡ ~30 Minutes";
+    } else if (lender.id === "manappuram") {
+        rateText = "11.90% – 16.00% p.a.";
+        speedText = "⚡ ~30 Minutes";
+    } else if (lender.id === "iifl") {
+        rateText = "10.50% – 15.50% p.a.";
+        speedText = "⏱️ ~1 Hour";
+    }
+
     return `
         <div class="recommendation-card">
             <h2>
@@ -651,6 +719,26 @@ function renderRecommendationCard(lender, index) {
             <p class="recommendation-summary">
                 ${getMatchHeadline(lender, index)}
             </p>
+
+            <!-- Structured Metrics Grid -->
+            <div class="match-details-grid">
+                <div class="match-detail-item">
+                    <span class="detail-label">Indicative Rate</span>
+                    <span class="detail-value rate-green">${rateText}</span>
+                </div>
+                <div class="match-detail-item">
+                    <span class="detail-label">Disbursal Speed</span>
+                    <span class="detail-value">${speedText}</span>
+                </div>
+                <div class="match-detail-item">
+                    <span class="detail-label">Max Valuation</span>
+                    <span class="detail-value">Up to 75% LTV (RBI Cap)</span>
+                </div>
+                <div class="match-detail-item">
+                    <span class="detail-label">Availability</span>
+                    <span class="detail-value">Surat Branches</span>
+                </div>
+            </div>
 
             <h3>Why this matches you</h3>
 
