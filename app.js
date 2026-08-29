@@ -2,7 +2,8 @@ const app = document.getElementById("app");
 
 const state = {
     currentQuestion: 0,
-    answers: {}
+    answers: {},
+    leadData: {}
 };
 
 function trackEvent(eventName, parameters = {}) {
@@ -10,9 +11,9 @@ function trackEvent(eventName, parameters = {}) {
     if (typeof gtag === "function") {
         gtag("event", eventName, parameters);
     }
-    // Send event to Meta Pixel
+    // Meta Pixel
     if (typeof fbq === "function") {
-        if (eventName === "questionnaire_completed") {
+        if (eventName === "questionnaire_completed" || eventName === "lead_submitted") {
             fbq("track", "Lead", parameters);
         } else {
             fbq("trackCustom", eventName, parameters);
@@ -115,7 +116,7 @@ function renderLanding() {
                 </div>
 
                 <div style="margin-top: 14px; font-size: 0.8rem; color: #059669; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 4px;">
-                    <span>⚡ 100% Free • No Mobile Number or OTP Required</span>
+                    <span>⚡ 100% Free • Verified Surat Branch Matches</span>
                 </div>
             </div>
 
@@ -165,7 +166,7 @@ function renderLanding() {
                 if (state.currentQuestion < questions.length) {
                     showQuestion(state.currentQuestion);
                 } else {
-                    showRecommendation();
+                    showPhoneGate();
                 }
             }, 180);
         });
@@ -419,15 +420,20 @@ function nextQuestion() {
     if (state.currentQuestion < questions.length) {
         showQuestion(state.currentQuestion);
     } else {
-        showRecommendation();
+        showPhoneGate();
     }
 }
 
 /* ======================================================
-   RECOMMENDATION
+   PHONE & LOCATION CAPTURE GATE
 ====================================================== */
 
-function showRecommendation() {
+function showPhoneGate() {
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+
     trackEvent("questionnaire_completed", {
         purpose: state.answers.purpose || "",
         priority: state.answers.priority || "",
@@ -437,7 +443,164 @@ function showRecommendation() {
         current_lender: state.answers.currentLender || ""
     });
 
+    app.innerHTML = `
+        <div class="phone-gate-card" style="max-width: 480px; margin: 0 auto; padding: 20px 16px; background: #ffffff; border: 2px solid #e2e8f0; border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); text-align: left;">
+            
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                <span style="font-size: 1.4rem;">🎉</span>
+                <h2 style="font-size: 1.3rem; font-weight: 800; color: #0f172a; margin: 0;">We Found Your Best Matches!</h2>
+            </div>
+
+            <p style="font-size: 0.92rem; color: #475569; margin-bottom: 18px; line-height: 1.45;">
+                Enter your WhatsApp/Mobile number to view your exact branch rate card and local appraiser contact in Surat.
+            </p>
+
+            <form id="leadCaptureForm">
+                <div style="margin-bottom: 14px;">
+                    <label for="leadName" style="display: block; font-size: 0.85rem; font-weight: 700; color: #1e293b; margin-bottom: 6px;">
+                        Full Name
+                    </label>
+                    <input 
+                        type="text" 
+                        id="leadName" 
+                        required 
+                        placeholder="e.g. Rahul Patel" 
+                        style="width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; box-sizing: border-box;"
+                    />
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label for="leadPhone" style="display: block; font-size: 0.85rem; font-weight: 700; color: #1e293b; margin-bottom: 6px;">
+                        WhatsApp / Mobile Number
+                    </label>
+                    <div style="display: flex; align-items: center; border: 1.5px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #ffffff;">
+                        <span style="background: #f1f5f9; padding: 12px 12px; font-size: 0.95rem; font-weight: 600; color: #475569; border-right: 1.5px solid #cbd5e1;">+91</span>
+                        <input 
+                            type="tel" 
+                            id="leadPhone" 
+                            required 
+                            pattern="[6-9][0-9]{9}" 
+                            maxlength="10" 
+                            placeholder="98765 43210" 
+                            style="width: 100%; padding: 12px 14px; border: none; outline: none; font-size: 1rem; box-sizing: border-box;"
+                        />
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 18px;">
+                    <label for="leadArea" style="display: block; font-size: 0.85rem; font-weight: 700; color: #1e293b; margin-bottom: 6px;">
+                        Your Area in Surat
+                    </label>
+                    <select 
+                        id="leadArea" 
+                        required 
+                        style="width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; background: #ffffff; color: #0f172a; box-sizing: border-box;"
+                    >
+                        <option value="Varachha / Mini Bazar" selected>Varachha / Mini Bazar / Hirabaug</option>
+                        <option value="Katargam / AK Road">Katargam / AK Road / Ved Road</option>
+                        <option value="Adajan / Pal / Rander">Adajan / Pal / Rander</option>
+                        <option value="Vesu / City Light / Althan">Vesu / City Light / Althan</option>
+                        <option value="Ring Road / Textile Market">Ring Road / Textile Market</option>
+                        <option value="Other Area in Surat">Other Area in Surat</option>
+                    </select>
+                </div>
+
+                <button 
+                    type="submit" 
+                    id="submitLeadBtn" 
+                    style="width: 100%; padding: 14px 16px; background: #2563eb; color: #ffffff; font-size: 1.05rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 3px 8px rgba(37,99,235,0.3); display: flex; justify-content: center; align-items: center; gap: 8px;"
+                >
+                    <span>Unlock Matched Lenders & Rates</span> →
+                </button>
+            </form>
+
+            <div style="margin-top: 14px; font-size: 0.78rem; color: #64748b; line-height: 1.4; text-align: center;">
+                🔒 <strong>Strict Privacy:</strong> Your number is only used to send branch contact details & loan eligibility. No spam.
+            </div>
+
+        </div>
+    `;
+
+    document.getElementById("leadCaptureForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById("leadName").value.trim();
+        const phone = document.getElementById("leadPhone").value.trim();
+        const area = document.getElementById("leadArea").value;
+
+        if (phone.length !== 10) {
+            alert("Please enter a valid 10-digit mobile number.");
+            return;
+        }
+
+        state.leadData = {
+            name: name,
+            phone: phone,
+            area: area,
+            timestamp: new Date().toISOString()
+        };
+
+        const submitBtn = document.getElementById("submitLeadBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = "<span>Matching Branch Appraisers...</span>";
+
+        // Dispatch GA4 & Meta Pixel Events
+        trackEvent("lead_submitted", {
+            name: name,
+            area: area,
+            amount: state.answers.amount || "",
+            purpose: state.answers.purpose || "",
+            priority: state.answers.priority || "",
+            urgency: state.answers.urgency || ""
+        });
+
+        // Push lead payload to webhook / backend
+        sendLeadToWebhook({
+            ...state.leadData,
+            answers: state.answers
+        });
+
+        setTimeout(() => {
+            showRecommendation();
+        }, 350);
+    });
+}
+
+function sendLeadToWebhook(payload) {
+    // console.log("Captured Lead Payload:", payload);
+
+    const WEBHOOK_URL = "https://formspree.io/f/mgaeegyr";
+
+    fetch(WEBHOOK_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+        .then(response => {
+            if (response.ok) {
+                // console.log("Lead successfully delivered to Formspree!");
+            } else {
+                // console.error("Formspree rejected submission:", response.statusText);
+            }
+        })
+        .catch(err => console.error("Webhook network error:", err));
+}
+
+/* ======================================================
+   RECOMMENDATION
+====================================================== */
+
+function showRecommendation() {
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+
     const recommendations = getRecommendations(state.answers);
+    const userArea = state.leadData.area || "Surat";
 
     app.innerHTML = `
         <div class="result">
@@ -445,7 +608,7 @@ function showRecommendation() {
             <h1>Your Recommended Lenders</h1>
 
             <p class="subtitle">
-                Matched for ${state.answers.amount || "your loan"} in Surat based on lowest interest cost, per-gram value, and speed.
+                Matched for <strong>${state.answers.amount || "your loan"}</strong> near <strong>${userArea}</strong> based on lowest interest cost, per-gram value, and speed.
             </p>
 
             ${recommendations.map(renderRecommendationCard).join("<hr>")}
@@ -516,6 +679,7 @@ function showRecommendation() {
         amount: state.answers.amount || "",
         urgency: state.answers.urgency || "",
         loan_style: state.answers.loanStyle || "",
+        area: userArea,
         recommendation_1: recommendations[0]?.id || "",
         recommendation_2: recommendations[1]?.id || "",
         recommendation_3: recommendations[2]?.id || ""
@@ -538,6 +702,7 @@ function showRecommendation() {
                 urgency: state.answers.urgency || "",
                 loan_style: state.answers.loanStyle || "",
                 purpose: state.answers.purpose || "",
+                area: userArea,
                 recommendation_1: recommendations[0]?.id || "",
                 recommendation_2: recommendations[1]?.id || "",
                 recommendation_3: recommendations[2]?.id || ""
@@ -550,6 +715,7 @@ function showRecommendation() {
     document.getElementById("restartBtn").addEventListener("click", () => {
         state.currentQuestion = 0;
         state.answers = {};
+        state.leadData = {};
         renderLanding();
         window.scrollTo({
             top: 0,
@@ -681,6 +847,7 @@ function getMatchHeadline(lender, index) {
 function renderRecommendationCard(lender, index) {
     const medals = ["🥇", "🥈", "🥉"];
     const explanation = getRecommendationExplanation(lender, index);
+    const userArea = state.leadData.area || "Surat";
 
     // Dynamic rate & speed mapping across your 7 lenders
     let rateText = "8.75% – 9.50% p.a.";
@@ -735,8 +902,8 @@ function renderRecommendationCard(lender, index) {
                     <span class="detail-value">Up to 75% LTV (RBI Cap)</span>
                 </div>
                 <div class="match-detail-item">
-                    <span class="detail-label">Availability</span>
-                    <span class="detail-value">Surat Branches</span>
+                    <span class="detail-label">Available Near</span>
+                    <span class="detail-value">${userArea.split('/')[0].trim()}</span>
                 </div>
             </div>
 
