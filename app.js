@@ -178,6 +178,12 @@ function renderLanding() {
 ====================================================== */
 
 function showQuestion(index) {
+    // Reset scroll to top immediately so the question and progress bar are fully visible
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+
     const question = questions[index];
 
     app.innerHTML = `
