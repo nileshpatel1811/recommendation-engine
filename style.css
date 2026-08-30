@@ -741,3 +741,43 @@ hr {
     color: #15803d;
 
 }
+
+/* Base Transition for All Amount Buttons */
+.amount-btn {
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    outline: none;
+}
+
+/* Arrow Slide Transition */
+.amount-btn span {
+    display: inline-block;
+    transition: transform 0.22s ease !important;
+}
+
+/* Standard Button Hover State */
+.amount-btn:hover {
+    background-color: #f8fafc !important;
+    border-color: #2563eb !important;
+    color: #1d4ed8 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Popular / Selected Button Hover State */
+.amount-btn.popular:hover {
+    background-color: #dbeafe !important;
+    border-color: #1d4ed8 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25) !important;
+}
+
+/* Arrow Slide Animation on Hover */
+.amount-btn:hover span {
+    transform: translateX(4px);
+}
+
+/* Button Active / Click Press Effect */
+.amount-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}

@@ -730,120 +730,104 @@ function showRecommendation() {
     });
 }
 
+/* ======================================================
+   DYNAMIC RECOMMENDATION EXPLANATION ENGINE
+====================================================== */
+
 function getRecommendationExplanation(lender, index) {
     const answers = state.answers;
     const profile = lender.profile || {};
     const reasons = [];
     const tradeoffs = [];
 
-    if (answers.priority === "Lowest interest cost") {
+    const isSwitching = answers.purpose === "Switch an existing gold loan";
+    const isLargeAmount = answers.amount === "Above ₹5 lakh" || answers.amount === "₹2 lakh - ₹5 lakh";
+    const currentLenderName = answers.currentLender || "your current lender";
+
+    // 1. Balance Transfer / Switch Specific Logic
+    if (isSwitching) {
         if (profile.interestPosition === "competitive") {
-            reasons.push("A stronger match because keeping interest cost low is your top priority.");
-        } else {
-            tradeoffs.push("Its main advantage is not lower interest cost compared with the bank options.");
+            reasons.push(`Significant interest savings compared to ${currentLenderName} (reduces borrowing cost by 3%–6% p.a.).`);
+        } else if (lender.id === "iifl" || lender.id === "hdfc") {
+            reasons.push(`Fast takeover desk assistance with potential top-up cash on appreciated gold valuation.`);
         }
     }
 
-    if (answers.priority === "Highest loan amount") {
-        if (profile.loanAmount === "very_high" || profile.loanAmount === "high") {
-            reasons.push("A stronger match if you need a larger gold-loan amount.");
-        } else {
-            tradeoffs.push("Another lender may be a stronger option if maximising loan amount is your main goal.");
-        }
-    }
-
-    if (answers.priority === "Fastest processing") {
-        if (profile.speed === "fast") {
-            reasons.push("A stronger match because you prioritised faster processing.");
-        } else {
-            tradeoffs.push("Some other lenders in our comparison may offer faster processing.");
-        }
-    }
-
-    if (answers.priority === "Best overall recommendation" || answers.priority === "Best overall balance") {
-        if (profile.interestPosition === "competitive") {
-            reasons.push("Offers a competitive option for borrowers who care about borrowing cost.");
-        }
-        if (profile.speed === "fast") {
-            reasons.push("Offers a faster-processing option compared with some bank alternatives.");
-        }
-        if (profile.repaymentOptions && profile.repaymentOptions.length >= 2) {
-            reasons.push("Offers more than one repayment structure.");
-        }
-    }
-
-    if (answers.urgency === "Today") {
-        if (profile.speed === "fast") {
-            reasons.push("Its product offering makes processing speed a meaningful part of the match.");
-        } else {
-            tradeoffs.push("Actual same-day availability can depend on the product, branch and application.");
-        }
-    }
-
-    if (answers.urgency === "Within a few days" && profile.speed === "fast") {
-        reasons.push("Its faster-processing profile fits your short timeline.");
-    }
-
-    if (answers.amount === "Above ₹5 lakh" || answers.amount === "₹2 lakh - ₹5 lakh") {
-        if (profile.loanAmount === "very_high") {
-            reasons.push("Its loan-size profile makes it a strong option for larger borrowing needs.");
-        } else if (profile.loanAmount === "high") {
-            reasons.push("Its loan-size profile is suitable for a larger borrowing requirement.");
-        }
-    }
-
-    if (answers.loanStyle === "Lower cost, fewer payments") {
-        if (profile.interestPosition === "competitive") {
-            reasons.push("Better aligned with your preference to keep borrowing cost down.");
-        }
-        if (profile.bullet) {
-            reasons.push("A bullet repayment option is available for this lender.");
-        }
-        if (profile.interestPosition !== "competitive") {
-            tradeoffs.push("Its published pricing may not be the strongest fit if minimizing interest cost is your main goal.");
-        }
-    }
-
+    // 2. Loan Style & Repayment Flexibility
     if (answers.loanStyle === "Flexible payments and partial gold release") {
-        if (profile.monthlyInterest) {
-            reasons.push("A monthly-interest repayment option is available.");
-        }
-        if (profile.partialPrepayment) {
-            reasons.push("Partial prepayment is supported.");
-        }
-        if (profile.repaymentOptions && profile.repaymentOptions.length >= 2) {
-            reasons.push("Multiple repayment structures are available.");
-        }
         if (profile.partialGoldRelease) {
-            reasons.push("Part-release of pledged gold is supported, subject to the applicable product terms.");
+            reasons.push("Supports proportional gold release when paying down principal.");
         }
-        if (!profile.monthlyInterest && !profile.partialPrepayment) {
-            tradeoffs.push("This lender may offer less repayment flexibility than some alternatives.");
+        if (profile.monthlyInterest || lender.id === "canara" || lender.id === "sbi") {
+            reasons.push("Overdraft (OD) / flexible interest-servicing facility available.");
+        }
+    } else if (answers.loanStyle === "Lower cost, fewer payments") {
+        if (profile.bullet) {
+            reasons.push("Clean bullet repayment scheme (repay principal and interest at maturity).");
         }
     }
 
-    if (answers.purpose === "Switch an existing gold loan") {
-        reasons.push("This option is included as an alternative lender while you compare your existing loan.");
+    // 3. Priorities & Ticket Size
+    if (answers.priority === "Lowest interest cost" && profile.interestPosition === "competitive") {
+        reasons.push("Category-leading benchmark interest rate among Surat branches.");
+    } else if (answers.priority === "Highest loan amount" && (profile.loanAmount === "very_high" || profile.loanAmount === "high")) {
+        reasons.push("Maximizes per-gram valuation up to the official 75% RBI LTV ceiling.");
+    } else if (answers.priority === "Fastest processing" && profile.speed === "fast") {
+        reasons.push("Priority fast-track processing and immediate gold assaying on-site.");
     }
 
+    // 4. Large Ticket Size Benefit
+    if (isLargeAmount && (lender.id === "canara" || lender.id === "sbi" || lender.id === "bob")) {
+        reasons.push("Special high-ticket slabs with capped processing charges.");
+    }
+
+    // 5. Context-Aware Tradeoffs / Things to Know
+    if (isSwitching) {
+        if (profile.interestPosition === "competitive") {
+            tradeoffs.push("Balance takeover requires 2–4 working days to clear custody from your existing lender.");
+        } else {
+            tradeoffs.push("Higher interest rate than public sector banks, but offers faster 24–48 hr takeover settlement.");
+        }
+    } else {
+        if (profile.speed !== "fast") {
+            tradeoffs.push("Requires visiting the local branch during working hours; turnaround is typically 1–2 days.");
+        }
+        if (profile.interestPosition === "higher_variable" || profile.interestPosition === "variable") {
+            tradeoffs.push("Rates are higher than public sector banks; best suited for short-term liquidity.");
+        }
+    }
+
+    // Fallbacks if list is sparse
     if (reasons.length === 0 && lender.reasons) {
         reasons.push(...lender.reasons.slice(0, 2));
     }
-
     if (tradeoffs.length === 0 && lender.tradeoffs) {
         tradeoffs.push(...lender.tradeoffs.slice(0, 1));
     }
+    if (tradeoffs.length === 0) {
+        tradeoffs.push("Final sanctioned rate and per-gram appraisal depend on gold purity (22K/24K) and scheme selected.");
+    }
+
+    // Deduplicate any accidental duplicate strings
+    const uniqueReasons = [...new Set(reasons)];
+    const uniqueTradeoffs = [...new Set(tradeoffs)];
 
     return {
-        reasons: reasons.slice(0, 3),
-        tradeoffs: tradeoffs.slice(0, 2)
+        reasons: uniqueReasons.slice(0, 3),
+        tradeoffs: uniqueTradeoffs.slice(0, 2)
     };
 }
 
-function getMatchHeadline(lender, index) {
-    if (index === 0) return "Strongest match based on your answers";
-    if (index === 1) return "Another strong option to compare";
-    return "Another option worth considering";
+function getMatchHeadline(lender, index, answers) {
+    const isSwitching = answers && answers.purpose === "Switch an existing gold loan";
+
+    if (index === 0) {
+        return isSwitching ? "Top recommendation for loan takeover & maximum savings" : "Strongest overall match based on your preferences";
+    }
+    if (index === 1) {
+        return isSwitching ? "Fastest assisted balance-transfer option" : "Strong secondary option with high per-gram valuation";
+    }
+    return "Reliable alternative for rate and tenure comparison";
 }
 
 /* ======================================================
@@ -854,23 +838,24 @@ function renderRecommendationCard(lender, index) {
     const medals = ["🥇", "🥈", "🥉"];
     const explanation = getRecommendationExplanation(lender, index);
     const userArea = state.leadData.area || "Surat";
+    const isSwitching = state.answers.purpose === "Switch an existing gold loan";
 
-    // Dynamic rate & speed mapping across your 7 lenders
+    // Dynamic rate & speed mapping
     let rateText = "8.75% – 9.50% p.a.";
     let speedText = "📅 1 – 2 Days";
 
     if (lender.id === "sbi") {
         rateText = "8.75% – 9.50% p.a.";
-        speedText = "📅 1 – 2 Days";
+        speedText = isSwitching ? "⏱️ 2 – 3 Days (Takeover)" : "📅 1 – 2 Days";
     } else if (lender.id === "bob") {
         rateText = "8.80% – 9.50% p.a.";
-        speedText = "📅 1 – 2 Days";
+        speedText = isSwitching ? "⏱️ 2 – 3 Days (Takeover)" : "📅 1 – 2 Days";
     } else if (lender.id === "canara") {
         rateText = "8.75% – 10.25% p.a.";
-        speedText = "⚡ Same Day (Swarna)";
+        speedText = isSwitching ? "⏱️ 2 – 4 Days (Takeover)" : "⚡ Same Day (Swarna)";
     } else if (lender.id === "hdfc") {
         rateText = "9.00% – 16.00% p.a.";
-        speedText = "⏱️ Same Day";
+        speedText = isSwitching ? "⏱️ 24 – 48 Hours" : "⏱️ Same Day";
     } else if (lender.id === "muthoot") {
         rateText = "11.90% – 16.00% p.a.";
         speedText = "⚡ ~30 Minutes";
@@ -879,67 +864,48 @@ function renderRecommendationCard(lender, index) {
         speedText = "⚡ ~30 Minutes";
     } else if (lender.id === "iifl") {
         rateText = "10.50% – 15.50% p.a.";
-        speedText = "⏱️ ~1 Hour";
+        speedText = isSwitching ? "⏱️ 24 – 48 Hours (Assisted)" : "⏱️ ~1 Hour";
     }
 
     return `
-        <div class="recommendation-card">
-            <h2>
-                ${medals[index]}
-                ${lender.name}
+        <div class="recommendation-card" style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:12px; padding:18px; margin-bottom:20px; box-shadow:0 3px 10px rgba(0,0,0,0.03);">
+            <h2 style="font-size:1.25rem; font-weight:800; color:#0f172a; margin-top:0; margin-bottom:4px;">
+                ${medals[index]} ${lender.name}
             </h2>
 
-            <p class="recommendation-summary">
-                ${getMatchHeadline(lender, index)}
+            <p class="recommendation-summary" style="font-size:0.9rem; font-weight:600; color:#2563eb; margin-bottom:14px;">
+                ${getMatchHeadline(lender, index, state.answers)}
             </p>
 
             <!-- Structured Metrics Grid -->
-            <div class="match-details-grid">
+            <div class="match-details-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:16px;">
                 <div class="match-detail-item">
-                    <span class="detail-label">Indicative Rate</span>
-                    <span class="detail-value rate-green">${rateText}</span>
+                    <span class="detail-label" style="display:block; font-size:0.75rem; color:#64748b; text-transform:uppercase;">Indicative Rate</span>
+                    <span class="detail-value rate-green" style="font-weight:700; color:#166534; font-size:0.95rem;">${rateText}</span>
                 </div>
                 <div class="match-detail-item">
-                    <span class="detail-label">Disbursal Speed</span>
-                    <span class="detail-value">${speedText}</span>
+                    <span class="detail-label" style="display:block; font-size:0.75rem; color:#64748b; text-transform:uppercase;">${isSwitching ? 'Takeover Speed' : 'Disbursal Speed'}</span>
+                    <span class="detail-value" style="font-weight:600; color:#1e293b; font-size:0.95rem;">${speedText}</span>
                 </div>
                 <div class="match-detail-item">
-                    <span class="detail-label">Max Valuation</span>
-                    <span class="detail-value">Up to 75% LTV (RBI Cap)</span>
+                    <span class="detail-label" style="display:block; font-size:0.75rem; color:#64748b; text-transform:uppercase;">Max Valuation</span>
+                    <span class="detail-value" style="font-weight:600; color:#1e293b; font-size:0.95rem;">Up to 75% LTV</span>
                 </div>
                 <div class="match-detail-item">
-                    <span class="detail-label">Available Near</span>
-                    <span class="detail-value">${userArea.split('/')[0].trim()}</span>
+                    <span class="detail-label" style="display:block; font-size:0.75rem; color:#64748b; text-transform:uppercase;">Available Near</span>
+                    <span class="detail-value" style="font-weight:600; color:#1e293b; font-size:0.95rem;">${userArea.split('/')[0].trim()}</span>
                 </div>
             </div>
 
-            <h3>Why this matches you</h3>
+            <h3 style="font-size:0.95rem; font-weight:700; color:#0f172a; margin-bottom:8px;">Why this matches you</h3>
+            <ul style="margin:0 0 16px 0; padding-left:20px; font-size:0.88rem; color:#334155; line-height:1.5;">
+                ${explanation.reasons.map(reason => `<li style="margin-bottom:6px;">${reason}</li>`).join("")}
+            </ul>
 
-            ${
-        explanation.reasons.length
-            ? `
-                        <ul>
-                            ${explanation.reasons.map(reason => `<li>${reason}</li>`).join("")}
-                        </ul>
-                    `
-            : `
-                        <p>This lender matches several of the preferences you selected.</p>
-                    `
-    }
-
-            <h3>Things to know</h3>
-
-            ${
-        explanation.tradeoffs.length
-            ? `
-                        <ul>
-                            ${explanation.tradeoffs.map(tradeoff => `<li>${tradeoff}</li>`).join("")}
-                        </ul>
-                    `
-            : `
-                        <p>As with any gold loan, confirm the current rate, charges, eligibility and repayment terms directly with the lender.</p>
-                    `
-    }
+            <h3 style="font-size:0.95rem; font-weight:700; color:#0f172a; margin-bottom:8px;">Things to know</h3>
+            <ul style="margin:0; padding-left:20px; font-size:0.88rem; color:#64748b; line-height:1.5;">
+                ${explanation.tradeoffs.map(tradeoff => `<li style="margin-bottom:6px;">${tradeoff}</li>`).join("")}
+            </ul>
         </div>
     `;
 }
